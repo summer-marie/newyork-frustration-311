@@ -20,6 +20,7 @@ import {
 } from './modules/charts.js'
 import { initZipOverlapTable } from './modules/table.js'
 import { initFilters } from './modules/filters.js'
+import { initZipMap } from './modules/map.js'
 import { formatNumber, formatBorough } from './modules/utils.js'
 
 // NYC Open Data Socrata API endpoint
@@ -90,6 +91,33 @@ function setText(id, value) {
   if (element) element.textContent = value
 }
 
+function updateZipPanelFromRow(row) {
+  if (!row) return
+
+  const zip = row.incident_zip
+  const noiseTotal = row.noise_total || row.noise_count || 0
+  const rodentTotal = row.rodent_total || row.rodent_count || 0
+  const total = row.total_complaints || noiseTotal + rodentTotal
+  const noisePercent = total ? Math.round((noiseTotal / total) * 100) : 0
+  const rodentPercent = total ? Math.round((rodentTotal / total) * 100) : 0
+
+  setText('map-focus-zip', zip ? `ZIP ${zip}` : 'ZIP')
+  setText('map-focus-total', `${formatNumber(total)} complaints`)
+  setText('zip-panel-title', zip ? `ZIP Code ${zip}` : 'ZIP Code Detail')
+  setText('zip-panel-total', formatNumber(total))
+  setText('zip-panel-noise', formatNumber(noiseTotal))
+  setText('zip-panel-rodent', formatNumber(rodentTotal))
+  setText('zip-panel-top-type', row.top_complaint_type || 'Noise / Rodent')
+  setText('zip-panel-borough', formatBorough(row.borough || 'Unknown'))
+  setText('zip-bar-noise', `${noisePercent}%`)
+  setText('zip-bar-rodent', `${rodentPercent}%`)
+
+  const noiseFill = document.getElementById('zip-bar-noise-fill')
+  const rodentFill = document.getElementById('zip-bar-rodent-fill')
+  if (noiseFill) noiseFill.style.width = `${Math.max(noisePercent, 4)}%`
+  if (rodentFill) rodentFill.style.width = `${Math.max(rodentPercent, 4)}%`
+}
+
 function updateZipDetailPanel(zipOverlap, noiseByZip, rodentByZip) {
   const selected = zipOverlap[0] || null
   const fallback = noiseByZip[0] || rodentByZip[0]
@@ -101,24 +129,13 @@ function updateZipDetailPanel(zipOverlap, noiseByZip, rodentByZip) {
   const noiseTotal = selected?.noise_total || noiseMatch?.total || 0
   const rodentTotal = selected?.rodent_total || rodentMatch?.total || 0
   const borough = selected?.borough || noiseMatch?.borough || rodentMatch?.borough || 'Unknown'
-  const total = noiseTotal + rodentTotal
-  const noisePercent = total ? Math.round((noiseTotal / total) * 100) : 0
-  const rodentPercent = total ? Math.round((rodentTotal / total) * 100) : 0
-
-  setText('map-focus-zip', zip)
-  setText('map-focus-total', `${formatNumber(total)} complaints`)
-  setText('zip-panel-title', `ZIP Code ${zip}`)
-  setText('zip-panel-total', formatNumber(total))
-  setText('zip-panel-noise', formatNumber(noiseTotal))
-  setText('zip-panel-rodent', formatNumber(rodentTotal))
-  setText('zip-panel-borough', formatBorough(borough))
-  setText('zip-bar-noise', `${noisePercent}%`)
-  setText('zip-bar-rodent', `${rodentPercent}%`)
-
-  const noiseFill = document.getElementById('zip-bar-noise-fill')
-  const rodentFill = document.getElementById('zip-bar-rodent-fill')
-  if (noiseFill) noiseFill.style.width = `${Math.max(noisePercent, 4)}%`
-  if (rodentFill) rodentFill.style.width = `${Math.max(rodentPercent, 4)}%`
+  updateZipPanelFromRow({
+    incident_zip: zip,
+    borough,
+    noise_total: noiseTotal,
+    rodent_total: rodentTotal,
+    top_complaint_type: 'Noise / Rodent'
+  })
 }
 
 /**
@@ -141,7 +158,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     zipOverlap,
     noiseByZip,
     rodentByZip,
-    complaintTrend
+    complaintTrend,
+    zipMapRows
   ] = await Promise.all([
     fetch('/api/noise/by-borough').then(r => r.json()),
     fetch('/api/rodent/by-borough').then(r => r.json()),
@@ -149,7 +167,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     fetch('/api/overlap/zip').then(r => r.json()),
     fetch('/api/noise/by-zip').then(r => r.json()),
     fetch('/api/rodent/by-zip').then(r => r.json()),
-    fetch('/api/complaints/trend').then(r => r.json())
+    fetch('/api/complaints/trend').then(r => r.json()),
+    fetch('/api/complaints/by-zip').then(r => r.json())
   ])
   
   // Calculate aggregate statistics by summing counts across all boroughs
@@ -171,6 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initComplaintTrendChart(complaintTrend)
   initBoroughComparisonChart(noiseByBorough, rodentByBorough)
   initZipOverlapTable(zipOverlap)
+  initZipMap(zipMapRows, updateZipPanelFromRow)
   initFilters() // Currently a stub - no active filtering yet
   
   // Fetch live data from NYC Open Data API (asynchronous)

@@ -11,7 +11,7 @@ const cors = require('cors');
 const apiRouter = require('./routes/api.cjs');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // === Middleware ===
 
@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
       'GET /api/noise/by-zip',
       'GET /api/noise/by-type',
       'GET /api/complaints/trend',
+      'GET /api/complaints/by-zip',
       'GET /api/rodent/by-borough',
       'GET /api/rodent/by-zip',
       'GET /api/overlap/zip'

@@ -26,6 +26,10 @@ const {
   getZipOverlap 
 } = require('../queries/overlapQueries.cjs');
 
+const {
+  getComplaintsByZip
+} = require('../queries/zipQueries.cjs');
+
 // === Noise Endpoints ===
 
 /**
@@ -87,6 +91,19 @@ router.get('/noise/by-type', (req, res, next) => {
 router.get('/complaints/trend', (req, res, next) => {
   try {
     const data = getComplaintTrend();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/complaints/by-zip
+ * Returns ZIP-level complaint summaries for map exploration
+ */
+router.get('/complaints/by-zip', (req, res, next) => {
+  try {
+    const data = getComplaintsByZip();
     res.json(data);
   } catch (error) {
     next(error);

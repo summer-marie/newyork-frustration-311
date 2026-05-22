@@ -78,6 +78,67 @@
       background-size: auto, 86px 86px, 86px 86px, auto;
     }
 
+    #zip-map {
+      min-height: 420px;
+      height: clamp(420px, 48vw, 620px);
+      width: 100%;
+      background: #071018;
+    }
+
+    .leaflet-container {
+      background: #071018;
+      color: #e5edf7;
+      font-family: inherit;
+    }
+
+    .leaflet-control-zoom a {
+      background: rgba(3, 7, 13, 0.86);
+      border-color: rgba(148, 163, 184, 0.28);
+      color: #f8fafc;
+    }
+
+    .leaflet-control-zoom a:hover {
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--yellow);
+    }
+
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip {
+      background: rgba(5, 9, 16, 0.94);
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      color: #f8fafc;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    }
+
+    .leaflet-popup-content {
+      margin: 12px 14px;
+    }
+
+    .zip-popup {
+      display: grid;
+      gap: 4px;
+      min-width: 150px;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .zip-popup strong {
+      color: var(--yellow);
+      font-size: 13px;
+    }
+
+    .leaflet-tooltip {
+      background: rgba(3, 7, 13, 0.92);
+      border: 1px solid rgba(248, 197, 55, 0.32);
+      color: #f8fafc;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36);
+    }
+
+    .zip-complaint-marker {
+      filter: drop-shadow(0 0 12px rgba(248, 197, 55, 0.26));
+      cursor: pointer;
+    }
+
     .borough-shape {
       clip-path: polygon(18% 8%, 74% 2%, 95% 32%, 84% 74%, 58% 94%, 19% 82%, 3% 43%);
     }
@@ -245,41 +306,24 @@
             <article class="glass-card rounded-lg p-4">
               <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h2 class="text-sm font-black uppercase text-white">Complaints by ZIP Code</h2>
-                <label class="flex h-10 w-full max-w-[220px] items-center gap-2 rounded-md border border-slate-700 bg-black/35 px-3">
-                  <input class="min-w-0 flex-1 bg-transparent text-xs text-white placeholder:text-slate-400 focus:outline-none" placeholder="Search ZIP code" inputmode="numeric" aria-label="Search map ZIP code">
-                  <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.8">
+                <label class="flex h-10 w-full max-w-[240px] items-center gap-2 rounded-md border border-slate-700 bg-black/35 px-3">
+                  <input id="zip-map-search" class="min-w-0 flex-1 bg-transparent text-xs text-white placeholder:text-slate-400 focus:outline-none" placeholder="Search ZIP code" inputmode="numeric" aria-label="Search map ZIP code">
+                  <button id="zip-map-search-button" type="button" class="text-slate-300 hover:text-yellow-300" aria-label="Search ZIP code on map">
+                    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
                     <circle cx="11" cy="11" r="7"/>
                     <path d="m20 20-3.5-3.5"/>
-                  </svg>
+                    </svg>
+                  </button>
                 </label>
               </div>
               <div class="map-grid relative min-h-[420px] overflow-hidden rounded-md border border-slate-700/80">
-                <div class="absolute left-4 top-4 z-10 grid gap-2">
-                  <button class="grid h-9 w-9 place-items-center rounded-md border border-slate-600 bg-black/55 text-lg">+</button>
-                  <button class="grid h-9 w-9 place-items-center rounded-md border border-slate-600 bg-black/55 text-lg">-</button>
-                  <button class="grid h-9 w-9 place-items-center rounded-md border border-slate-600 bg-black/55">
-                    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
-                  </button>
-                </div>
-                <div class="absolute inset-8 sm:inset-12">
-                  <div class="borough-shape absolute left-[24%] top-[8%] h-[58%] w-[30%] rotate-[-15deg] border border-blue-200/55 bg-blue-500/15"></div>
-                  <div class="borough-shape absolute left-[47%] top-[12%] h-[48%] w-[34%] rotate-[10deg] border border-purple-200/55 bg-purple-500/20"></div>
-                  <div class="borough-shape absolute left-[33%] top-[42%] h-[47%] w-[37%] rotate-[20deg] border border-red-200/55 bg-red-500/20"></div>
-                  <div class="borough-shape absolute left-[13%] top-[55%] h-[31%] w-[24%] rotate-[-20deg] border border-yellow-200/50 bg-yellow-400/15"></div>
-                  <div class="absolute left-[36%] top-[46%] h-8 w-8 rounded-sm bg-red-500/80 shadow-[0_0_28px_rgba(255,81,72,0.75)]"></div>
-                  <div class="absolute left-[60%] top-[28%] h-7 w-7 rounded-sm bg-purple-500/80 shadow-[0_0_24px_rgba(168,85,247,0.7)]"></div>
-                  <div class="absolute left-[54%] top-[63%] h-9 w-9 rounded-sm bg-yellow-400/75 shadow-[0_0_28px_rgba(248,197,55,0.7)]"></div>
-                  <div class="absolute left-[25%] top-[32%] text-xs font-black uppercase text-slate-100">Manhattan</div>
-                  <div class="absolute left-[62%] top-[27%] text-xs font-black uppercase text-slate-100">The Bronx</div>
-                  <div class="absolute left-[57%] top-[58%] text-xs font-black uppercase text-slate-100">Queens</div>
-                  <div class="absolute left-[33%] top-[72%] text-xs font-black uppercase text-slate-100">Brooklyn</div>
-                  <div class="absolute left-[9%] top-[74%] text-xs font-black uppercase text-slate-100">Staten Island</div>
-                  <div class="absolute left-[40%] top-[54%] rounded-md bg-black px-4 py-3 text-sm shadow-xl">
-                    <div id="map-focus-zip" class="font-mono text-white">11211</div>
-                    <div id="map-focus-total" class="text-xs text-slate-300">Loading complaints</div>
-                  </div>
+                <div id="zip-map" aria-label="Interactive NYC ZIP complaint map"></div>
+                <div class="pointer-events-none absolute bottom-4 right-4 z-[500] rounded-md border border-slate-700/80 bg-black/70 px-4 py-3 text-sm shadow-xl backdrop-blur">
+                  <div id="map-focus-zip" class="font-mono text-white">ZIP</div>
+                  <div id="map-focus-total" class="text-xs text-slate-300">Loading complaints</div>
                 </div>
               </div>
+              <p id="zip-map-status" class="mt-3 text-xs text-slate-400">Click a ZIP marker or search for a top ZIP code.</p>
             </article>
 
             <aside class="glass-card rounded-lg p-4">
@@ -296,6 +340,7 @@
                 <div class="mt-3 grid gap-2 text-sm">
                   <div class="flex justify-between gap-3"><span class="text-slate-400">Noise Complaints</span><span id="zip-panel-noise" class="font-semibold text-white">...</span></div>
                   <div class="flex justify-between gap-3"><span class="text-slate-400">Rodent Complaints</span><span id="zip-panel-rodent" class="font-semibold text-white">...</span></div>
+                  <div class="flex justify-between gap-3"><span class="text-slate-400">Top Type</span><span id="zip-panel-top-type" class="font-semibold text-white">...</span></div>
                   <div class="flex justify-between gap-3"><span class="text-slate-400">Borough</span><span id="zip-panel-borough" class="font-semibold text-white">...</span></div>
                 </div>
               </div>
