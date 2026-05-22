@@ -22,6 +22,146 @@ const chartDefaults = {
   textColor: 'rgba(255, 255, 255, 0.9)'   // High contrast white text
 }
 
+Chart.defaults.color = chartDefaults.textColor
+Chart.defaults.font.family = 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+
+const sharedOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        color: chartDefaults.textColor,
+        boxWidth: 10,
+        boxHeight: 10
+      }
+    }
+  },
+  scales: {
+    x: {
+      grid: {
+        color: chartDefaults.gridColor
+      },
+      ticks: {
+        color: chartDefaults.textColor
+      }
+    },
+    y: {
+      grid: {
+        color: chartDefaults.gridColor
+      },
+      ticks: {
+        color: chartDefaults.textColor
+      }
+    }
+  }
+}
+
+/**
+ * Initialize line chart showing monthly complaint trend for noise and rodents.
+ *
+ * @param {Array} data - Array of {created_month, noise_total, rodent_total}
+ */
+export function initComplaintTrendChart(data) {
+  const ctx = document.getElementById('complaints-trend-chart')
+  if (!ctx) return
+
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const labels = data.map(row => monthNames[Number(row.created_month) - 1] || row.created_month)
+  const noiseValues = data.map(row => row.noise_total)
+  const rodentValues = data.map(row => row.rodent_total)
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Noise',
+          data: noiseValues,
+          borderColor: '#ff5148',
+          backgroundColor: 'rgba(255, 81, 72, 0.16)',
+          borderWidth: 2,
+          pointRadius: 2,
+          pointHoverRadius: 4,
+          tension: 0.34,
+          fill: true
+        },
+        {
+          label: 'Rodents',
+          data: rodentValues,
+          borderColor: '#a855f7',
+          backgroundColor: 'rgba(168, 85, 247, 0.12)',
+          borderWidth: 2,
+          pointRadius: 2,
+          pointHoverRadius: 4,
+          tension: 0.34,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      ...sharedOptions,
+      plugins: {
+        ...sharedOptions.plugins,
+        legend: {
+          position: 'top',
+          labels: sharedOptions.plugins.legend.labels
+        }
+      }
+    }
+  })
+}
+
+/**
+ * Initialize grouped bar chart comparing noise and rodent complaints by borough.
+ *
+ * @param {Array} noiseData - Array of {borough, noise_count}
+ * @param {Array} rodentData - Array of {borough, rodent_count}
+ */
+export function initBoroughComparisonChart(noiseData, rodentData) {
+  const ctx = document.getElementById('borough-comparison-chart')
+  if (!ctx) return
+
+  const boroughs = [...new Set([
+    ...noiseData.map(row => row.borough),
+    ...rodentData.map(row => row.borough)
+  ])]
+  const noiseByBorough = new Map(noiseData.map(row => [row.borough, row.noise_count]))
+  const rodentByBorough = new Map(rodentData.map(row => [row.borough, row.rodent_count]))
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: boroughs,
+      datasets: [
+        {
+          label: 'Noise',
+          data: boroughs.map(borough => noiseByBorough.get(borough) || 0),
+          backgroundColor: '#ff5148',
+          borderRadius: 4
+        },
+        {
+          label: 'Rodents',
+          data: boroughs.map(borough => rodentByBorough.get(borough) || 0),
+          backgroundColor: '#a855f7',
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      ...sharedOptions,
+      plugins: {
+        ...sharedOptions.plugins,
+        legend: {
+          position: 'top',
+          labels: sharedOptions.plugins.legend.labels
+        }
+      }
+    }
+  })
+}
+
 /**
  * Initialize horizontal bar chart showing noise complaints by NYC borough
  * 

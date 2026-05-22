@@ -43,6 +43,7 @@ app.get('/', (req, res) => {
       'GET /api/noise/by-hour',
       'GET /api/noise/by-zip',
       'GET /api/noise/by-type',
+      'GET /api/complaints/trend',
       'GET /api/rodent/by-borough',
       'GET /api/rodent/by-zip',
       'GET /api/overlap/zip'

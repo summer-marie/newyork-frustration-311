@@ -72,9 +72,30 @@ function getNoiseByType() {
   return query.all();
 }
 
+/**
+ * Get monthly complaint counts for noise and rodent categories.
+ * @returns {Array} Array of {created_month, noise_total, rodent_total} objects
+ */
+function getComplaintTrend() {
+  const query = db.prepare(`
+    SELECT
+      created_month,
+      SUM(CASE WHEN complaint_type LIKE '%Noise%' THEN 1 ELSE 0 END) as noise_total,
+      SUM(CASE WHEN complaint_type LIKE '%Rodent%' THEN 1 ELSE 0 END) as rodent_total
+    FROM service_requests
+    WHERE created_month IS NOT NULL
+      AND (complaint_type LIKE '%Noise%' OR complaint_type LIKE '%Rodent%')
+    GROUP BY created_month
+    ORDER BY created_month
+  `);
+
+  return query.all();
+}
+
 module.exports = {
   getNoiseByBorough,
   getNoiseByHour,
   getNoiseByZip,
-  getNoiseByType
+  getNoiseByType,
+  getComplaintTrend
 };

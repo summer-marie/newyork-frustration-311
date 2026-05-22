@@ -5,100 +5,330 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NYC 311: Rats & Noise</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --panel: rgba(9, 14, 22, 0.76);
+      --panel-strong: rgba(8, 12, 20, 0.92);
+      --border: rgba(148, 163, 184, 0.28);
+      --yellow: #f8c537;
+      --red: #ff5148;
+      --purple: #a855f7;
+      --blue: #4ea7ff;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 80% 8%, rgba(168, 85, 247, 0.14), transparent 28rem),
+        radial-gradient(circle at 8% 18%, rgba(78, 167, 255, 0.12), transparent 25rem),
+        linear-gradient(180deg, #030507 0%, #090e14 48%, #05070a 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .subway-scene {
+      background:
+        linear-gradient(90deg, rgba(2, 6, 10, 0.9) 0%, rgba(2, 6, 10, 0.48) 44%, rgba(2, 6, 10, 0.12) 100%),
+        repeating-linear-gradient(105deg, rgba(255, 255, 255, 0.09) 0 1px, transparent 1px 54px),
+        linear-gradient(126deg, rgba(248, 197, 55, 0.22) 0 3px, transparent 3px 18%),
+        radial-gradient(circle at 76% 22%, rgba(255, 81, 72, 0.2), transparent 12rem),
+        linear-gradient(165deg, #20242b 0%, #111820 38%, #06090d 72%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subway-scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 22px, rgba(255, 255, 255, 0.05) 23px 24px),
+        linear-gradient(102deg, transparent 0 42%, rgba(0, 0, 0, 0.56) 42% 44%, transparent 44%),
+        linear-gradient(78deg, transparent 0 58%, rgba(0, 0, 0, 0.54) 58% 60%, transparent 60%);
+      opacity: 0.62;
+      pointer-events: none;
+    }
+
+    .glass-card {
+      background: linear-gradient(145deg, rgba(12, 18, 28, 0.86), rgba(8, 12, 19, 0.68));
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+    }
+
+    .map-grid {
+      background:
+        radial-gradient(circle at 53% 50%, rgba(78, 167, 255, 0.14), transparent 17rem),
+        linear-gradient(30deg, rgba(255, 255, 255, 0.05) 12%, transparent 12% 88%, rgba(255, 255, 255, 0.05) 88%),
+        linear-gradient(150deg, rgba(255, 255, 255, 0.04) 12%, transparent 12% 88%, rgba(255, 255, 255, 0.04) 88%),
+        #071018;
+      background-size: auto, 86px 86px, 86px 86px, auto;
+    }
+
+    .borough-shape {
+      clip-path: polygon(18% 8%, 74% 2%, 95% 32%, 84% 74%, 58% 94%, 19% 82%, 3% 43%);
+    }
+  </style>
 </head>
-<body class="bg-[#1a1a2e] text-gray-200">
-  <!-- Hero Header -->
-  <div class="container mx-auto px-4 py-12">
-    <h1 class="text-5xl md:text-6xl font-bold text-center mb-4 text-yellow-400">NYC 311: Rats & Noise</h1>
-    <p class="text-xl text-center text-gray-300 max-w-3xl mx-auto">
-      Do the loudest neighborhoods also have the most rats? We asked 25,000 complaints.
-    </p>
-  </div>
-
-  <!-- Stat Bar -->
-  <div class="container mx-auto px-4 mb-12">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-[#16213e] p-6 rounded-lg border-l-4 border-yellow-400">
-        <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">Total Noise Complaints</div>
-        <div id="stat-noise" class="text-4xl font-bold text-yellow-400">—</div>
-      </div>
-      <div class="bg-[#16213e] p-6 rounded-lg border-l-4 border-red-500">
-        <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">Total Rodent Complaints</div>
-        <div id="stat-rodent" class="text-4xl font-bold text-red-500">—</div>
-      </div>
-      <div class="bg-[#16213e] p-6 rounded-lg border-l-4 border-yellow-400">
-        <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">Overlapping ZIPs</div>
-        <div id="stat-overlap" class="text-4xl font-bold text-yellow-400">—</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Charts Side by Side -->
-  <div class="container mx-auto px-4 mb-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-[#16213e] p-6 rounded-lg border-t-4 border-yellow-400">
-        <h2 class="text-2xl font-semibold mb-4 text-yellow-400">Noise by Borough</h2>
-        <canvas id="noise-borough-chart"></canvas>
-      </div>
-      
-      <div class="bg-[#16213e] p-6 rounded-lg border-t-4 border-red-500">
-        <h2 class="text-2xl font-semibold mb-4 text-red-500">Rodent by Borough</h2>
-        <canvas id="rodent-borough-chart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- The Smoking Gun Section -->
-  <div class="container mx-auto px-4 mb-12">
-    <div class="bg-[#16213e] p-8 rounded-lg border-l-4 border-yellow-400">
-      <h2 class="text-3xl font-bold mb-2 text-yellow-400">🔍 The Smoking Gun</h2>
-      <p class="text-gray-300 mb-6">ZIP codes that appear in BOTH top-20 noise and top-20 rodent complaint lists:</p>
-      <div id="zip-overlap-table"></div>
-    </div>
-  </div>
-
-  <!-- Full Width Chart: Noise by Hour -->
-  <div class="container mx-auto px-4 mb-12">
-    <div class="bg-[#16213e] p-6 rounded-lg border-t-4 border-yellow-400">
-      <h2 class="text-2xl font-semibold mb-4 text-yellow-400">Noise Complaints by Hour of Day</h2>
-      <canvas id="noise-hour-chart"></canvas>
-    </div>
-  </div>
-
-  <!-- Live Feed Cards -->
-  <div class="container mx-auto px-4 mb-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-[#16213e] p-6 rounded-lg border-t-4 border-red-500">
-        <div class="flex items-center gap-2 mb-4">
-          <h3 class="text-xl font-semibold text-red-500">Latest Rodent Reports</h3>
-          <span class="flex items-center gap-1 text-xs bg-yellow-400 text-black px-2 py-1 rounded-full font-bold">
-            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            LIVE
-          </span>
+<body class="text-slate-100 antialiased">
+  <main class="mx-auto min-h-screen w-full max-w-[1536px] px-4 py-4 sm:px-6 lg:px-8">
+    <div class="overflow-hidden rounded-lg border border-slate-600/40 bg-black/35 shadow-2xl">
+      <nav class="flex min-h-16 flex-wrap items-center justify-between gap-4 border-b border-slate-700/70 px-5 py-3 lg:px-7">
+        <a href="#" class="flex items-baseline gap-2">
+          <span class="text-xl font-black uppercase tracking-normal text-white">NYC 311</span>
+          <span class="text-sm font-black uppercase tracking-normal text-red-500">Insights</span>
+        </a>
+        <div class="order-3 flex w-full items-center gap-1 overflow-x-auto text-xs font-semibold uppercase text-slate-300 sm:order-2 sm:w-auto sm:justify-center">
+          <a href="#" class="border-b-2 border-white px-4 py-5 text-white">Dashboard</a>
+          <a href="#" class="px-4 py-5 hover:text-white">Complaints</a>
+          <a href="#" class="px-4 py-5 hover:text-white">Trends</a>
+          <a href="#" class="px-4 py-5 hover:text-white">ZIP Code Map</a>
+          <a href="#" class="px-4 py-5 hover:text-white">About</a>
         </div>
-        <div id="live-rodent" class="text-sm text-gray-400">Loading...</div>
-      </div>
-      
-      <div class="bg-[#16213e] p-6 rounded-lg border-t-4 border-yellow-400">
-        <div class="flex items-center gap-2 mb-4">
-          <h3 class="text-xl font-semibold text-yellow-400">Latest Noise Reports</h3>
-          <span class="flex items-center gap-1 text-xs bg-yellow-400 text-black px-2 py-1 rounded-full font-bold">
-            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            LIVE
-          </span>
+        <div class="order-2 flex items-center gap-3 sm:order-3">
+          <button class="grid h-10 w-10 place-items-center rounded-md border border-slate-600/70 text-slate-200 hover:border-blue-400 hover:text-blue-300" aria-label="Toggle theme">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8Z"/>
+            </svg>
+          </button>
+          <button class="flex h-10 items-center gap-2 rounded-md border border-slate-600/70 px-4 text-sm font-semibold text-white hover:border-yellow-400">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 5h16M7 12h10M10 19h4"/>
+              <path d="M8 5l4 7v5"/>
+            </svg>
+            Filters
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
         </div>
-        <div id="live-noise" class="text-sm text-gray-400">Loading...</div>
-      </div>
-    </div>
-  </div>
+      </nav>
 
-  <!-- Footer -->
-  <footer class="container mx-auto px-4 py-8 border-t border-gray-700">
-    <p class="text-center text-gray-500 text-sm">
-      Source: NYC Open Data 311 Service Requests 2023
-    </p>
-  </footer>
-  
+      <section class="grid gap-4 p-4 lg:grid-cols-[1.05fr_1.95fr] lg:p-6">
+        <div class="subway-scene min-h-[430px] rounded-lg border border-slate-600/40 p-6 sm:p-8 lg:min-h-[790px]">
+          <div class="relative z-10 flex h-full flex-col justify-between">
+            <div>
+              <p class="mb-4 text-xs font-black uppercase text-blue-300">Hero Section</p>
+              <h1 class="max-w-lg text-5xl font-black uppercase leading-[0.96] text-white sm:text-6xl lg:text-7xl">
+                See what's bugging NYC.
+              </h1>
+              <p class="mt-5 max-w-md text-base leading-7 text-slate-200">
+                Explore 311 noise and rodent complaints by ZIP code, borough, and time with a street-level look at where quality-of-life calls cluster.
+              </p>
+              <label class="mt-8 flex max-w-md items-center gap-3 rounded-md border border-slate-500/70 bg-black/55 px-4 py-3 text-slate-300 shadow-xl">
+                <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-white" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="11" cy="11" r="7"/>
+                  <path d="m20 20-3.5-3.5"/>
+                </svg>
+                <input class="w-full bg-transparent text-sm text-white placeholder:text-slate-400 focus:outline-none" placeholder="Search ZIP code..." inputmode="numeric" aria-label="Search ZIP code">
+              </label>
+              <div class="mt-5 flex flex-wrap gap-2 text-xs text-slate-300">
+                <span class="mr-1 py-2">Popular searches:</span>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">10001</button>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">11211</button>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">11375</button>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">10467</button>
+              </div>
+            </div>
+            <div class="relative z-10 mt-10 flex items-center gap-2 text-xs font-semibold text-slate-400">
+              <span class="h-2 w-2 rounded-full bg-yellow-400"></span>
+              NYC Open Data 311 Service Requests
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <section class="grid gap-4 md:grid-cols-3">
+            <article class="glass-card rounded-lg p-5">
+              <div class="flex items-start justify-between gap-4">
+                <div class="grid h-11 w-11 place-items-center rounded-md border border-red-400/50 text-red-400">
+                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/>
+                  </svg>
+                </div>
+                <div class="h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-red-500/50 to-red-400/70"></div>
+              </div>
+              <p class="mt-4 text-xs font-semibold uppercase text-slate-300">Noise Complaints</p>
+              <div id="stat-noise" class="mt-2 text-4xl font-bold text-white">...</div>
+              <p class="mt-2 text-sm text-red-300">Loud streets, parties, vehicles, and construction calls</p>
+            </article>
+
+            <article class="glass-card rounded-lg p-5">
+              <div class="flex items-start justify-between gap-4">
+                <div class="grid h-11 w-11 place-items-center rounded-md border border-purple-400/50 text-purple-300">
+                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path d="M6 16c.6-4.3 3.2-7 7.8-8.2L16 4l2.3 3.4c1.6.6 2.7 1.7 3.2 3.3"/>
+                    <path d="M4 17c2.6 2.7 7.7 3 15.4 1 .9-.2 1.4-1.2 1-2.1-.4-.9-1.4-1.3-2.3-1l-2 .7"/>
+                    <circle cx="16.5" cy="10.5" r=".8" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div class="h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-purple-500/50 to-purple-300/80"></div>
+              </div>
+              <p class="mt-4 text-xs font-semibold uppercase text-slate-300">Rodent Complaints</p>
+              <div id="stat-rodent" class="mt-2 text-4xl font-bold text-white">...</div>
+              <p class="mt-2 text-sm text-purple-200">Rat sightings, baiting requests, and pest conditions</p>
+            </article>
+
+            <article class="glass-card rounded-lg p-5">
+              <div class="flex items-start justify-between gap-4">
+                <div class="grid h-11 w-11 place-items-center rounded-md border border-blue-400/50 text-blue-300">
+                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/>
+                    <circle cx="12" cy="9" r="2.4"/>
+                  </svg>
+                </div>
+                <div class="h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-blue-500/50 to-blue-300/80"></div>
+              </div>
+              <p class="mt-4 text-xs font-semibold uppercase text-slate-300">ZIP Codes With Complaints</p>
+              <div id="stat-overlap" class="mt-2 text-4xl font-bold text-white">...</div>
+              <p class="mt-2 text-sm text-blue-200">ZIPs appearing in both top complaint lists</p>
+            </article>
+          </section>
+
+          <section class="glass-card rounded-lg p-3">
+            <div class="grid gap-3 md:grid-cols-4">
+              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left">
+                <span>
+                  <span class="block text-xs text-slate-400">Date Range</span>
+                  <span class="text-sm font-semibold text-white">Jan 1, 2023 - Dec 31, 2023</span>
+                </span>
+                <span class="text-slate-400">v</span>
+              </button>
+              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left">
+                <span>
+                  <span class="block text-xs text-slate-400">Complaint Type</span>
+                  <span class="text-sm font-semibold text-white">All Types</span>
+                </span>
+                <span class="text-slate-400">v</span>
+              </button>
+              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left">
+                <span>
+                  <span class="block text-xs text-slate-400">Borough</span>
+                  <span class="text-sm font-semibold text-white">All Boroughs</span>
+                </span>
+                <span class="text-slate-400">v</span>
+              </button>
+              <button class="flex items-center justify-center gap-3 rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-sm font-semibold text-white hover:border-yellow-400">
+                More Filters
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M4 7h10M18 7h2M4 17h2M10 17h10M7 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                </svg>
+              </button>
+            </div>
+          </section>
+
+          <section class="grid gap-4 xl:grid-cols-[1.25fr_0.56fr_0.5fr]">
+            <article class="glass-card rounded-lg p-4">
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h2 class="text-sm font-black uppercase text-white">Complaints by ZIP Code</h2>
+                <label class="flex h-10 w-full max-w-[220px] items-center gap-2 rounded-md border border-slate-700 bg-black/35 px-3">
+                  <input class="min-w-0 flex-1 bg-transparent text-xs text-white placeholder:text-slate-400 focus:outline-none" placeholder="Search ZIP code" inputmode="numeric" aria-label="Search map ZIP code">
+                  <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="m20 20-3.5-3.5"/>
+                  </svg>
+                </label>
+              </div>
+              <div class="map-grid relative min-h-[420px] overflow-hidden rounded-md border border-slate-700/80">
+                <div class="absolute left-4 top-4 z-10 grid gap-2">
+                  <button class="grid h-9 w-9 place-items-center rounded-md border border-slate-600 bg-black/55 text-lg">+</button>
+                  <button class="grid h-9 w-9 place-items-center rounded-md border border-slate-600 bg-black/55 text-lg">-</button>
+                  <button class="grid h-9 w-9 place-items-center rounded-md border border-slate-600 bg-black/55">
+                    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+                  </button>
+                </div>
+                <div class="absolute inset-8 sm:inset-12">
+                  <div class="borough-shape absolute left-[24%] top-[8%] h-[58%] w-[30%] rotate-[-15deg] border border-blue-200/55 bg-blue-500/15"></div>
+                  <div class="borough-shape absolute left-[47%] top-[12%] h-[48%] w-[34%] rotate-[10deg] border border-purple-200/55 bg-purple-500/20"></div>
+                  <div class="borough-shape absolute left-[33%] top-[42%] h-[47%] w-[37%] rotate-[20deg] border border-red-200/55 bg-red-500/20"></div>
+                  <div class="borough-shape absolute left-[13%] top-[55%] h-[31%] w-[24%] rotate-[-20deg] border border-yellow-200/50 bg-yellow-400/15"></div>
+                  <div class="absolute left-[36%] top-[46%] h-8 w-8 rounded-sm bg-red-500/80 shadow-[0_0_28px_rgba(255,81,72,0.75)]"></div>
+                  <div class="absolute left-[60%] top-[28%] h-7 w-7 rounded-sm bg-purple-500/80 shadow-[0_0_24px_rgba(168,85,247,0.7)]"></div>
+                  <div class="absolute left-[54%] top-[63%] h-9 w-9 rounded-sm bg-yellow-400/75 shadow-[0_0_28px_rgba(248,197,55,0.7)]"></div>
+                  <div class="absolute left-[25%] top-[32%] text-xs font-black uppercase text-slate-100">Manhattan</div>
+                  <div class="absolute left-[62%] top-[27%] text-xs font-black uppercase text-slate-100">The Bronx</div>
+                  <div class="absolute left-[57%] top-[58%] text-xs font-black uppercase text-slate-100">Queens</div>
+                  <div class="absolute left-[33%] top-[72%] text-xs font-black uppercase text-slate-100">Brooklyn</div>
+                  <div class="absolute left-[9%] top-[74%] text-xs font-black uppercase text-slate-100">Staten Island</div>
+                  <div class="absolute left-[40%] top-[54%] rounded-md bg-black px-4 py-3 text-sm shadow-xl">
+                    <div id="map-focus-zip" class="font-mono text-white">11211</div>
+                    <div id="map-focus-total" class="text-xs text-slate-300">Loading complaints</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <aside class="glass-card rounded-lg p-4">
+              <div class="mb-5 flex items-center justify-between">
+                <h2 id="zip-panel-title" class="text-sm font-black uppercase text-white">ZIP Code Detail</h2>
+                <button class="text-xl text-slate-400" aria-label="Close ZIP details">&times;</button>
+              </div>
+              <div class="border-b border-slate-700/80 pb-4">
+                <p class="text-xs font-black uppercase text-slate-300">Overview</p>
+                <div class="mt-3 flex items-end justify-between gap-3">
+                  <span class="text-sm text-slate-300">Total Complaints</span>
+                  <span id="zip-panel-total" class="text-2xl font-bold text-red-400">...</span>
+                </div>
+                <div class="mt-3 grid gap-2 text-sm">
+                  <div class="flex justify-between gap-3"><span class="text-slate-400">Noise Complaints</span><span id="zip-panel-noise" class="font-semibold text-white">...</span></div>
+                  <div class="flex justify-between gap-3"><span class="text-slate-400">Rodent Complaints</span><span id="zip-panel-rodent" class="font-semibold text-white">...</span></div>
+                  <div class="flex justify-between gap-3"><span class="text-slate-400">Borough</span><span id="zip-panel-borough" class="font-semibold text-white">...</span></div>
+                </div>
+              </div>
+              <div class="py-4">
+                <p class="mb-3 text-xs font-black uppercase text-slate-300">Top Complaint Types</p>
+                <div class="space-y-3 text-xs">
+                  <div>
+                    <div class="mb-1 flex justify-between"><span>Loud music / noise</span><span id="zip-bar-noise">...</span></div>
+                    <div class="h-2 rounded-full bg-slate-800"><div id="zip-bar-noise-fill" class="h-2 rounded-full bg-red-500" style="width: 50%"></div></div>
+                  </div>
+                  <div>
+                    <div class="mb-1 flex justify-between"><span>Rodents</span><span id="zip-bar-rodent">...</span></div>
+                    <div class="h-2 rounded-full bg-slate-800"><div id="zip-bar-rodent-fill" class="h-2 rounded-full bg-purple-500" style="width: 50%"></div></div>
+                  </div>
+                </div>
+              </div>
+              <button class="mt-2 w-full rounded-md border border-slate-600/80 bg-black/35 px-4 py-3 text-sm font-semibold text-white hover:border-blue-400">View ZIP Complaints</button>
+            </aside>
+
+            <aside class="glass-card rounded-lg p-4">
+              <div class="mb-3 flex items-center justify-between gap-3">
+                <h2 class="text-sm font-black uppercase text-white">Live Complaint Feed</h2>
+                <span class="flex items-center gap-2 text-xs font-black uppercase text-red-400"><span class="h-2 w-2 rounded-full bg-red-500"></span>Live</span>
+              </div>
+              <div class="space-y-3">
+                <div>
+                  <h3 class="mb-2 text-xs font-semibold uppercase text-red-300">Latest Noise Reports</h3>
+                  <div id="live-noise" class="text-sm text-slate-400">Loading...</div>
+                </div>
+                <div class="border-t border-slate-700/70 pt-3">
+                  <h3 class="mb-2 text-xs font-semibold uppercase text-purple-300">Latest Rodent Reports</h3>
+                  <div id="live-rodent" class="text-sm text-slate-400">Loading...</div>
+                </div>
+              </div>
+            </aside>
+          </section>
+
+          <section class="grid gap-4 xl:grid-cols-3">
+            <article class="glass-card rounded-lg p-4">
+              <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints Over Time</h2>
+              <canvas id="complaints-trend-chart" class="max-h-[260px]"></canvas>
+            </article>
+            <article class="glass-card rounded-lg p-4">
+              <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints by Borough</h2>
+              <canvas id="borough-comparison-chart" class="max-h-[260px]"></canvas>
+            </article>
+            <article class="glass-card rounded-lg p-4">
+              <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints by Hour</h2>
+              <canvas id="noise-hour-chart" class="max-h-[260px]"></canvas>
+            </article>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

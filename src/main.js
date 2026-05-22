@@ -2,7 +2,7 @@
  * NYC 311 Frustration Analysis - Main Entry Point
  * 
  * This file orchestrates the entire data visualization application:
- * - Imports static JSON data from src/data/ (exported from SQLite DB)
+ * - Fetches data from Express API server (port 3001) backed by SQLite DB
  * - Initializes all Chart.js visualizations
  * - Fetches live complaint data from NYC Open Data API
  * - Calculates and displays aggregate statistics
@@ -11,7 +11,13 @@
  */
 
 // Import chart initialization functions
-import { initNoiseByBoroughChart, initRodentByBoroughChart, initNoiseByHourChart } from './modules/charts.js'
+import {
+  initBoroughComparisonChart,
+  initComplaintTrendChart,
+  initNoiseByBoroughChart,
+  initNoiseByHourChart,
+  initRodentByBoroughChart
+} from './modules/charts.js'
 import { initZipOverlapTable } from './modules/table.js'
 import { initFilters } from './modules/filters.js'
 import { formatNumber, formatBorough } from './modules/utils.js'
@@ -52,7 +58,7 @@ function renderLiveFeed(containerId, data) {
   
   // Handle empty data gracefully
   if (!data || data.length === 0) {
-    container.innerHTML = '<p class="text-gray-500">No recent complaints</p>'
+    container.innerHTML = '<p class="text-slate-500">No recent complaints</p>'
     return
   }
   
@@ -60,17 +66,59 @@ function renderLiveFeed(containerId, data) {
   const html = data.map(item => {
     const date = new Date(item.created_date)
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    const isRodent = item.complaint_type === 'Rodent'
     
     return `
-      <div class="mb-3 pb-3 border-b border-gray-700 last:border-0">
-        <div class="font-semibold text-gray-200">${formatBorough(item.borough || 'Unknown')}</div>
-        <div class="text-gray-400 text-xs">${item.descriptor || 'No description'}</div>
-        <div class="text-gray-500 text-xs mt-1">${formattedDate}</div>
+      <div class="mb-3 border-b border-slate-700/70 pb-3 last:mb-0 last:border-0 last:pb-0">
+        <div class="flex items-start gap-3">
+          <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${isRodent ? 'bg-purple-400' : 'bg-red-400'}"></span>
+          <div>
+            <div class="font-semibold text-slate-100">${formatBorough(item.borough || 'Unknown')}</div>
+            <div class="text-xs leading-5 text-slate-300">${item.descriptor || 'No description'}</div>
+            <div class="mt-1 text-xs text-slate-500">${formattedDate}</div>
+          </div>
+        </div>
       </div>
     `
   }).join('')
   
   container.innerHTML = html
+}
+
+function setText(id, value) {
+  const element = document.getElementById(id)
+  if (element) element.textContent = value
+}
+
+function updateZipDetailPanel(zipOverlap, noiseByZip, rodentByZip) {
+  const selected = zipOverlap[0] || null
+  const fallback = noiseByZip[0] || rodentByZip[0]
+  if (!selected && !fallback) return
+
+  const zip = selected?.incident_zip || fallback.incident_zip
+  const noiseMatch = noiseByZip.find(row => row.incident_zip === zip)
+  const rodentMatch = rodentByZip.find(row => row.incident_zip === zip)
+  const noiseTotal = selected?.noise_total || noiseMatch?.total || 0
+  const rodentTotal = selected?.rodent_total || rodentMatch?.total || 0
+  const borough = selected?.borough || noiseMatch?.borough || rodentMatch?.borough || 'Unknown'
+  const total = noiseTotal + rodentTotal
+  const noisePercent = total ? Math.round((noiseTotal / total) * 100) : 0
+  const rodentPercent = total ? Math.round((rodentTotal / total) * 100) : 0
+
+  setText('map-focus-zip', zip)
+  setText('map-focus-total', `${formatNumber(total)} complaints`)
+  setText('zip-panel-title', `ZIP Code ${zip}`)
+  setText('zip-panel-total', formatNumber(total))
+  setText('zip-panel-noise', formatNumber(noiseTotal))
+  setText('zip-panel-rodent', formatNumber(rodentTotal))
+  setText('zip-panel-borough', formatBorough(borough))
+  setText('zip-bar-noise', `${noisePercent}%`)
+  setText('zip-bar-rodent', `${rodentPercent}%`)
+
+  const noiseFill = document.getElementById('zip-bar-noise-fill')
+  const rodentFill = document.getElementById('zip-bar-rodent-fill')
+  if (noiseFill) noiseFill.style.width = `${Math.max(noisePercent, 4)}%`
+  if (rodentFill) rodentFill.style.width = `${Math.max(rodentPercent, 4)}%`
 }
 
 /**
@@ -86,11 +134,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   console.log('NYC 311 Frustration Analysis initialized')
   
   // Fetch static data from backend API
-  const [noiseByBorough, rodentByBorough, noiseByHour, zipOverlap] = await Promise.all([
+  const [
+    noiseByBorough,
+    rodentByBorough,
+    noiseByHour,
+    zipOverlap,
+    noiseByZip,
+    rodentByZip,
+    complaintTrend
+  ] = await Promise.all([
     fetch('/api/noise/by-borough').then(r => r.json()),
     fetch('/api/rodent/by-borough').then(r => r.json()),
     fetch('/api/noise/by-hour').then(r => r.json()),
-    fetch('/api/overlap/zip').then(r => r.json())
+    fetch('/api/overlap/zip').then(r => r.json()),
+    fetch('/api/noise/by-zip').then(r => r.json()),
+    fetch('/api/rodent/by-zip').then(r => r.json()),
+    fetch('/api/complaints/trend').then(r => r.json())
   ])
   
   // Calculate aggregate statistics by summing counts across all boroughs
@@ -99,15 +158,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   const totalOverlap = zipOverlap.length // Number of ZIPs in both top-20 lists
   
   // Update stat bar cards with formatted numbers
-  document.getElementById('stat-noise').textContent = formatNumber(totalNoise)
-  document.getElementById('stat-rodent').textContent = formatNumber(totalRodent)
-  document.getElementById('stat-overlap').textContent = totalOverlap
+  setText('stat-noise', formatNumber(totalNoise))
+  setText('stat-rodent', formatNumber(totalRodent))
+  setText('stat-overlap', totalOverlap)
+  updateZipDetailPanel(zipOverlap, noiseByZip, rodentByZip)
   
   // Initialize all visualizations with static data
   // These render synchronously, so charts appear immediately on page load
   initNoiseByBoroughChart(noiseByBorough)
   initRodentByBoroughChart(rodentByBorough)
   initNoiseByHourChart(noiseByHour)
+  initComplaintTrendChart(complaintTrend)
+  initBoroughComparisonChart(noiseByBorough, rodentByBorough)
   initZipOverlapTable(zipOverlap)
   initFilters() // Currently a stub - no active filtering yet
   
@@ -122,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderLiveFeed('live-noise', noiseData)
   }).catch(error => {
     console.error('Error fetching live data:', error)
-    document.getElementById('live-rodent').innerHTML = '<p class="text-red-500">Unable to load live data</p>'
-    document.getElementById('live-noise').innerHTML = '<p class="text-red-500">Unable to load live data</p>'
+    document.getElementById('live-rodent').innerHTML = '<p class="text-red-400">Unable to load live data</p>'
+    document.getElementById('live-noise').innerHTML = '<p class="text-red-400">Unable to load live data</p>'
   })
 })

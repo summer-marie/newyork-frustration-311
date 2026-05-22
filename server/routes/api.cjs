@@ -13,7 +13,8 @@ const {
   getNoiseByBorough, 
   getNoiseByHour, 
   getNoiseByZip, 
-  getNoiseByType 
+  getNoiseByType,
+  getComplaintTrend
 } = require('../queries/noiseQueries.cjs');
 
 const { 
@@ -73,6 +74,19 @@ router.get('/noise/by-zip', (req, res, next) => {
 router.get('/noise/by-type', (req, res, next) => {
   try {
     const data = getNoiseByType();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/complaints/trend
+ * Returns monthly noise and rodent complaint counts
+ */
+router.get('/complaints/trend', (req, res, next) => {
+  try {
+    const data = getComplaintTrend();
     res.json(data);
   } catch (error) {
     next(error);

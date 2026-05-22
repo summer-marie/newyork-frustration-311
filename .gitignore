@@ -25,6 +25,9 @@ export-data.cjs
 export-data.js
 *.txt
 
+# Design files
+wireframes/
+
 # OS files
 .DS_Store
 Thumbs.db
