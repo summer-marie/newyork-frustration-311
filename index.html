@@ -139,6 +139,30 @@
       cursor: pointer;
     }
 
+    .zip-complaint-marker.is-selected {
+      filter: drop-shadow(0 0 18px rgba(248, 197, 55, 0.72));
+    }
+
+    .filter-select {
+      appearance: none;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .filter-select:focus {
+      outline: 0;
+    }
+
+    .filter-select option {
+      background: #08111b;
+      color: #f8fafc;
+    }
+
     .borough-shape {
       clip-path: polygon(18% 8%, 74% 2%, 95% 32%, 84% 74%, 58% 94%, 19% 82%, 3% 43%);
     }
@@ -345,8 +369,8 @@
                 <div class="kpi-gradient h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-red-500/50 to-red-400/70"></div>
               </div>
               <p class="mt-4 text-xs font-semibold uppercase text-slate-300">Noise Complaints</p>
-              <div id="stat-noise" class="loading-pulse mt-2 text-4xl font-bold text-white">—</div>
-              <p class="mt-auto pt-2 text-sm text-red-300">Loud streets, parties, vehicles, and construction calls</p>
+              <div id="stat-noise" class="loading-pulse mt-2 text-4xl font-bold text-white">...</div>
+              <p id="stat-noise-trend" class="mt-auto pt-2 text-sm text-red-300">Loud streets, parties, vehicles, and construction calls</p>
             </article>
 
             <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
@@ -361,8 +385,8 @@
                 <div class="kpi-gradient h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-purple-500/50 to-purple-300/80"></div>
               </div>
               <p class="mt-4 text-xs font-semibold uppercase text-slate-300">Rodent Complaints</p>
-              <div id="stat-rodent" class="loading-pulse mt-2 text-4xl font-bold text-white">—</div>
-              <p class="mt-auto pt-2 text-sm text-purple-200">Rat sightings, baiting requests, and pest conditions</p>
+              <div id="stat-rodent" class="loading-pulse mt-2 text-4xl font-bold text-white">...</div>
+              <p id="stat-rodent-trend" class="mt-auto pt-2 text-sm text-purple-200">Rat sightings, baiting requests, and pest conditions</p>
             </article>
 
             <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
@@ -376,8 +400,8 @@
                 <div class="kpi-gradient h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-blue-500/50 to-blue-300/80"></div>
               </div>
               <p class="mt-4 text-xs font-semibold uppercase text-slate-300">ZIP Codes With Complaints</p>
-              <div id="stat-overlap" class="loading-pulse mt-2 text-4xl font-bold text-white">—</div>
-              <p class="mt-auto pt-2 text-sm text-blue-200">ZIPs appearing in both top complaint lists</p>
+              <div id="stat-overlap" class="loading-pulse mt-2 text-4xl font-bold text-white">...</div>
+              <p id="stat-zip-trend" class="mt-auto pt-2 text-sm text-blue-200">ZIPs appearing in both top complaint lists</p>
             </article>
           </section>
 
@@ -388,21 +412,21 @@
                   <span class="block text-xs text-slate-400">Date Range</span>
                   <span class="text-sm font-semibold text-white">Jan 1, 2023 - Dec 31, 2023</span>
                 </span>
-                <span class="text-slate-400">▾</span>
+                <span class="text-slate-400">v</span>
               </button>
               <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left transition-all hover:border-slate-500 hover:bg-black/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 <span>
                   <span class="block text-xs text-slate-400">Complaint Type</span>
                   <span class="text-sm font-semibold text-white">All Types</span>
                 </span>
-                <span class="text-slate-400">▾</span>
+                <span class="text-slate-400">v</span>
               </button>
               <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left transition-all hover:border-slate-500 hover:bg-black/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 <span>
                   <span class="block text-xs text-slate-400">Borough</span>
                   <span class="text-sm font-semibold text-white">All Boroughs</span>
                 </span>
-                <span class="text-slate-400">▾</span>
+                <span class="text-slate-400">v</span>
               </button>
               <button class="flex items-center justify-center gap-3 rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 More Filters
@@ -411,6 +435,31 @@
                 </svg>
               </button>
             </div>
+            <div class="mt-3 grid gap-3 md:grid-cols-3">
+              <label class="rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 transition-all hover:border-slate-500 focus-within:border-yellow-400">
+                <span class="mb-1 block text-xs text-slate-400">Interactive Type Filter</span>
+                <select id="complaint-type-filter" class="filter-select" aria-label="Filter map markers by complaint type">
+                  <option value="all">All Types</option>
+                  <option value="noise">Noise</option>
+                  <option value="rodent">Rodent</option>
+                </select>
+              </label>
+              <label class="rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 transition-all hover:border-slate-500 focus-within:border-yellow-400">
+                <span class="mb-1 block text-xs text-slate-400">Interactive Borough Filter</span>
+                <select id="borough-filter" class="filter-select" aria-label="Filter map markers by borough">
+                  <option value="all">All Boroughs</option>
+                  <option value="BRONX">Bronx</option>
+                  <option value="BROOKLYN">Brooklyn</option>
+                  <option value="MANHATTAN">Manhattan</option>
+                  <option value="QUEENS">Queens</option>
+                  <option value="STATEN ISLAND">Staten Island</option>
+                </select>
+              </label>
+              <button id="clear-filters" type="button" class="rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
+                Clear interactive filters
+              </button>
+            </div>
+            <p id="filter-summary" class="mt-3 px-1 text-xs text-slate-400">Showing all complaint markers across all boroughs.</p>
           </section>
 
           <section class="fade-in-delay-3 grid gap-4 xl:grid-cols-[1.25fr_0.56fr_0.5fr]">

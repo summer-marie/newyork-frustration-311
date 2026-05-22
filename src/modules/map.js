@@ -63,6 +63,7 @@ export function initZipMap(zipRows, onZipSelect) {
   const maxTotal = Math.max(...zipRows.map(row => row.total_complaints || 0))
   const markers = new Map()
   const markerGroup = L.featureGroup().addTo(map)
+  let selectedMarker = null
 
   zipRows.forEach(row => {
     const lat = Number(row.latitude)
@@ -77,7 +78,8 @@ export function initZipMap(zipRows, onZipSelect) {
       fillColor: color,
       fillOpacity: 0.42,
       opacity: 0.95,
-      className: 'zip-complaint-marker'
+      className: 'zip-complaint-marker',
+      zipData: row
     })
 
     marker.bindTooltip(
@@ -99,6 +101,19 @@ export function initZipMap(zipRows, onZipSelect) {
     `)
 
     marker.on('click', () => {
+      if (selectedMarker) {
+        selectedMarker.getElement()?.classList.remove('is-selected')
+        selectedMarker.setStyle({
+          weight: 2,
+          fillOpacity: 0.42
+        })
+      }
+      selectedMarker = marker
+      marker.getElement()?.classList.add('is-selected')
+      marker.setStyle({
+        weight: 4,
+        fillOpacity: 0.72
+      })
       onZipSelect(row)
       setMapSearchStatus(`Selected ZIP ${row.incident_zip}`)
     })
@@ -114,10 +129,16 @@ export function initZipMap(zipRows, onZipSelect) {
   }
 
   const selectZip = zip => {
-    const marker = markers.get(String(zip).trim())
+    const cleanZip = String(zip).trim()
+    const marker = markers.get(cleanZip)
     if (!marker) {
-      setMapSearchStatus(`ZIP ${zip} is not in the current top ZIP data`)
+      setMapSearchStatus(`ZIP ${cleanZip || 'entered'} was not found in the current ZIP data.`)
       return
+    }
+
+    if (!map.hasLayer(marker)) {
+      marker.addTo(markerGroup)
+      setMapSearchStatus(`ZIP ${cleanZip} found outside the active filters.`)
     }
 
     map.flyTo(marker.getLatLng(), 13, {
@@ -145,5 +166,42 @@ export function initZipMap(zipRows, onZipSelect) {
     window.requestAnimationFrame(() => selectZip(firstZip))
   }
 
-  return map
+  const setFilters = ({ complaintType = 'all', borough = 'all' } = {}) => {
+    let visibleCount = 0
+    markerGroup.clearLayers()
+
+    markers.forEach(marker => {
+      const row = marker.options.zipData
+      const complaintMatches =
+        complaintType === 'all' ||
+        (complaintType === 'noise' && row.noise_count > 0) ||
+        (complaintType === 'rodent' && row.rodent_count > 0)
+      const boroughMatches = borough === 'all' || row.borough === borough
+
+      if (complaintMatches && boroughMatches) {
+        marker.addTo(markerGroup)
+        visibleCount += 1
+      }
+    })
+
+    if (visibleCount === 0) {
+      setMapSearchStatus('No ZIP markers match the selected filters.')
+      return { visibleCount }
+    }
+
+    const bounds = markerGroup.getBounds()
+    if (bounds.isValid()) {
+      map.fitBounds(bounds.pad(0.16), {
+        maxZoom: 12
+      })
+    }
+    setMapSearchStatus(`Showing ${visibleCount} ZIP marker${visibleCount === 1 ? '' : 's'} for the active filters.`)
+    return { visibleCount }
+  }
+
+  return {
+    map,
+    selectZip,
+    setFilters
+  }
 }

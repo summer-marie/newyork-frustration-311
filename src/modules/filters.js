@@ -1,31 +1,51 @@
 /**
- * Filter Module (Placeholder)
- * 
- * This module is currently a stub for future interactive filtering features.
- * 
- * Planned features:
- * - Date range picker to filter complaints by time period
- * - Borough dropdown to focus on specific areas
- * - Complaint type multi-select
- * - Real-time chart updates when filters change
- * 
- * Implementation approach:
- * 1. Store original unfiltered data in module-level variables
- * 2. Apply filters to create filtered datasets
- * 3. Re-initialize charts/tables with filtered data
- * 4. Update stat cards to reflect filtered totals
+ * Filter Module
+ *
+ * The current dashboard has practical map filtering for complaint type and
+ * borough. Full chart re-aggregation is intentionally left as a future step
+ * because the existing chart module initializes Chart.js instances without an
+ * update/destroy contract yet.
  */
 
 /**
- * Initialize filter UI components
- * 
- * TODO: Add date range picker UI above charts
- * TODO: Add borough filter dropdown
- * TODO: Wire up event handlers to trigger re-renders
+ * Initialize filter UI components.
+ *
+ * TODO: Extend chart modules to return Chart.js instances, then update chart
+ * datasets here when filters change.
  */
-export function initFilters() {
-  // Filter functionality stub - to be implemented later
-  console.log('Filters initialized')
+export function initFilters({ mapApi } = {}) {
+  const typeSelect = document.getElementById('complaint-type-filter')
+  const boroughSelect = document.getElementById('borough-filter')
+  const clearButton = document.getElementById('clear-filters')
+  const summary = document.getElementById('filter-summary')
+
+  if (!typeSelect || !boroughSelect) {
+    console.log('Filters initialized without visible controls')
+    return
+  }
+
+  const applyFilters = () => {
+    const complaintType = typeSelect.value
+    const borough = boroughSelect.value
+    const result = mapApi?.setFilters?.({ complaintType, borough })
+    const typeLabel = typeSelect.options[typeSelect.selectedIndex]?.text || 'All Types'
+    const boroughLabel = boroughSelect.options[boroughSelect.selectedIndex]?.text || 'All Boroughs'
+    const countText = result?.visibleCount !== undefined ? `${result.visibleCount} ZIP marker${result.visibleCount === 1 ? '' : 's'}` : 'ZIP markers'
+
+    if (summary) {
+      summary.textContent = `Showing ${countText} for ${typeLabel.toLowerCase()} in ${boroughLabel}. Charts remain citywide for now.`
+    }
+  }
+
+  typeSelect.addEventListener('change', applyFilters)
+  boroughSelect.addEventListener('change', applyFilters)
+  clearButton?.addEventListener('click', () => {
+    typeSelect.value = 'all'
+    boroughSelect.value = 'all'
+    applyFilters()
+  })
+
+  applyFilters()
 }
 
 /**

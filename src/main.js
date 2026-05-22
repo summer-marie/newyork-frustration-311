@@ -38,9 +38,15 @@ const BASE = 'https://data.cityofnewyork.us/resource/fhrw-4uyv.json'
  * TODO: Add error retry logic for failed API calls
  */
 async function fetchLiveComplaints(type, limit = 5) {
-  // Build SoQL query: filter by type, sort by date DESC, limit results
-  const url = `${BASE}?$where=complaint_type='${encodeURIComponent(type)}'&$order=created_date DESC&$limit=${limit}&$select=complaint_type,borough,descriptor,created_date`
+  const params = new URLSearchParams({
+    $where: `complaint_type='${type}'`,
+    $order: 'created_date DESC',
+    $limit: String(limit),
+    $select: 'complaint_type,borough,descriptor,created_date'
+  })
+  const url = `${BASE}?${params.toString()}`
   const res = await fetch(url)
+  if (!res.ok) throw new Error(`Live complaints request failed: ${res.status}`)
   return res.json()
 }
 
@@ -75,7 +81,8 @@ function renderLiveFeed(containerId, data) {
         <div class="flex items-start gap-3">
           <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${isRodent ? 'bg-purple-400' : 'bg-red-400'}"></span>
           <div>
-            <div class="font-semibold text-slate-100">${formatBorough(item.borough || 'Unknown')}</div>
+            <div class="font-semibold text-slate-100">${item.complaint_type || '311 Complaint'}</div>
+            <div class="text-xs text-slate-400">${formatBorough(item.borough || 'Unknown')}</div>
             <div class="text-xs leading-5 text-slate-300">${item.descriptor || 'No description'}</div>
             <div class="mt-1 text-xs text-slate-500">${formattedDate}</div>
           </div>
@@ -87,11 +94,53 @@ function renderLiveFeed(containerId, data) {
   container.innerHTML = html
 }
 
+function renderLiveLoading() {
+  const loadingHtml = '<p class="loading-pulse text-slate-500">Loading recent complaints...</p>'
+  const rodent = document.getElementById('live-rodent')
+  const noise = document.getElementById('live-noise')
+  if (rodent) rodent.innerHTML = loadingHtml
+  if (noise) noise.innerHTML = loadingHtml
+}
+
+function renderLiveError() {
+  const errorHtml = '<p class="text-red-400">Unable to load live complaints right now.</p>'
+  const rodent = document.getElementById('live-rodent')
+  const noise = document.getElementById('live-noise')
+  if (rodent) rodent.innerHTML = errorHtml
+  if (noise) noise.innerHTML = errorHtml
+}
+
 function setText(id, value) {
   const element = document.getElementById(id)
   if (element) {
     element.textContent = value
     element.classList.remove('loading-pulse')
+  }
+}
+
+async function loadJson(path) {
+  const res = await fetch(path)
+  if (!res.ok) throw new Error(`${path} failed with status ${res.status}`)
+  return res.json()
+}
+
+function setDashboardError(message) {
+  setText('map-focus-total', message)
+  const status = document.getElementById('zip-map-status')
+  if (status) status.textContent = message
+}
+
+function setKpiTrendText(complaintTrend, zipRows) {
+  const latest = complaintTrend[complaintTrend.length - 1]
+  const previous = complaintTrend[complaintTrend.length - 2]
+  if (latest && previous) {
+    const noiseDelta = latest.noise_total - previous.noise_total
+    const rodentDelta = latest.rodent_total - previous.rodent_total
+    setText('stat-noise-trend', `${noiseDelta >= 0 ? '+' : ''}${noiseDelta} vs previous month`)
+    setText('stat-rodent-trend', `${rodentDelta >= 0 ? '+' : ''}${rodentDelta} vs previous month`)
+  }
+  if (zipRows.length > 0) {
+    setText('stat-zip-trend', `${zipRows.length} mapped ZIPs in current data`)
   }
 }
 
@@ -150,54 +199,65 @@ function updateZipDetailPanel(zipOverlap, noiseByZip, rodentByZip) {
  */
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('NYC 311 Frustration Analysis initialized')
+  renderLiveLoading()
   
   // Fetch static data from backend API
-  const [
-    noiseByBorough,
-    rodentByBorough,
-    noiseByHour,
-    zipOverlap,
-    noiseByZip,
-    rodentByZip,
-    complaintTrend,
-    zipMapRows
-  ] = await Promise.all([
-    fetch('/api/noise/by-borough').then(r => r.json()),
-    fetch('/api/rodent/by-borough').then(r => r.json()),
-    fetch('/api/noise/by-hour').then(r => r.json()),
-    fetch('/api/overlap/zip').then(r => r.json()),
-    fetch('/api/noise/by-zip').then(r => r.json()),
-    fetch('/api/rodent/by-zip').then(r => r.json()),
-    fetch('/api/complaints/trend').then(r => r.json()),
-    fetch('/api/complaints/by-zip').then(r => r.json())
-  ])
+  try {
+    const [
+      noiseByBorough,
+      rodentByBorough,
+      noiseByHour,
+      zipOverlap,
+      noiseByZip,
+      rodentByZip,
+      complaintTrend,
+      zipMapRows
+    ] = await Promise.all([
+      loadJson('/api/noise/by-borough'),
+      loadJson('/api/rodent/by-borough'),
+      loadJson('/api/noise/by-hour'),
+      loadJson('/api/overlap/zip'),
+      loadJson('/api/noise/by-zip'),
+      loadJson('/api/rodent/by-zip'),
+      loadJson('/api/complaints/trend'),
+      loadJson('/api/complaints/by-zip')
+    ])
   
-  // Calculate aggregate statistics by summing counts across all boroughs
-  const totalNoise = noiseByBorough.reduce((sum, row) => sum + row.noise_count, 0)
-  const totalRodent = rodentByBorough.reduce((sum, row) => sum + row.rodent_count, 0)
-  const totalOverlap = zipOverlap.length // Number of ZIPs in both top-20 lists
-  const normalizedZipRows = normalizeZipRows(zipMapRows)
+    // Calculate aggregate statistics by summing counts across all boroughs
+    const totalNoise = noiseByBorough.reduce((sum, row) => sum + row.noise_count, 0)
+    const totalRodent = rodentByBorough.reduce((sum, row) => sum + row.rodent_count, 0)
+    const totalOverlap = zipOverlap.length // Number of ZIPs in both top-20 lists
+    const normalizedZipRows = normalizeZipRows(zipMapRows)
   
-  // Update stat bar cards with formatted numbers
-  setText('stat-noise', formatNumber(totalNoise))
-  setText('stat-rodent', formatNumber(totalRodent))
-  setText('stat-overlap', totalOverlap)
-  if (normalizedZipRows.length > 0) {
-    updateZipPanelFromRow(normalizedZipRows[0])
-  } else {
-    updateZipDetailPanel(zipOverlap, noiseByZip, rodentByZip)
+    // Update stat bar cards with formatted numbers
+    setText('stat-noise', formatNumber(totalNoise))
+    setText('stat-rodent', formatNumber(totalRodent))
+    setText('stat-overlap', totalOverlap)
+    setKpiTrendText(complaintTrend, normalizedZipRows)
+    if (normalizedZipRows.length > 0) {
+      updateZipPanelFromRow(normalizedZipRows[0])
+    } else {
+      updateZipDetailPanel(zipOverlap, noiseByZip, rodentByZip)
+    }
+  
+    // Initialize all visualizations with static data
+    // These render synchronously, so charts appear immediately on page load
+    initNoiseByBoroughChart(noiseByBorough)
+    initRodentByBoroughChart(rodentByBorough)
+    initNoiseByHourChart(noiseByHour)
+    initComplaintTrendChart(complaintTrend)
+    initBoroughComparisonChart(noiseByBorough, rodentByBorough)
+    initZipOverlapTable(zipOverlap)
+    const mapApi = initZipMap(normalizedZipRows, updateZipPanelFromRow)
+    initFilters({ mapApi })
+  } catch (error) {
+    console.error('Error loading dashboard data:', error)
+    setText('stat-noise', 'Error')
+    setText('stat-rodent', 'Error')
+    setText('stat-overlap', 'Error')
+    setDashboardError('Unable to load dashboard API data. Is the server running?')
+    initFilters()
   }
-  
-  // Initialize all visualizations with static data
-  // These render synchronously, so charts appear immediately on page load
-  initNoiseByBoroughChart(noiseByBorough)
-  initRodentByBoroughChart(rodentByBorough)
-  initNoiseByHourChart(noiseByHour)
-  initComplaintTrendChart(complaintTrend)
-  initBoroughComparisonChart(noiseByBorough, rodentByBorough)
-  initZipOverlapTable(zipOverlap)
-  initZipMap(normalizedZipRows, updateZipPanelFromRow)
-  initFilters() // Currently a stub - no active filtering yet
   
   // Fetch live data from NYC Open Data API (asynchronous)
   // These populate the "LIVE" feed cards after the initial page renders
@@ -210,7 +270,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderLiveFeed('live-noise', noiseData)
   }).catch(error => {
     console.error('Error fetching live data:', error)
-    document.getElementById('live-rodent').innerHTML = '<p class="text-red-400">Unable to load live data</p>'
-    document.getElementById('live-noise').innerHTML = '<p class="text-red-400">Unable to load live data</p>'
+    renderLiveError()
   })
 })
