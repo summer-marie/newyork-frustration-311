@@ -245,6 +245,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     initZipOverlapTable(zipOverlap)
     const mapApi = initZipMap(normalizedZipRows, updateZipPanelFromRow)
     initFilters({ mapApi })
+
+    // Wire hero search to map search
+    const heroSearch = document.getElementById('hero-zip-search')
+    const mapSearch = document.getElementById('zip-map-search')
+    const mapSearchBtn = document.getElementById('zip-map-search-button')
+
+    heroSearch?.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && heroSearch.value.trim()) {
+        mapSearch.value = heroSearch.value.trim()
+        mapSearchBtn.click()
+        document.getElementById('zipmap')?.scrollIntoView({ behavior: 'smooth' })
+      }
+    })
+
+    // Wire popular search buttons to map search
+    document.querySelectorAll('[data-zip]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const zip = btn.dataset.zip
+        mapSearch.value = zip
+        mapSearchBtn.click()
+        document.getElementById('zipmap')?.scrollIntoView({ behavior: 'smooth' })
+      })
+    })
   } catch (error) {
     console.error('Error loading dashboard data:', error)
     setText('stat-noise', 'Error')
