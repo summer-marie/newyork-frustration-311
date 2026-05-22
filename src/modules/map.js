@@ -19,18 +19,6 @@ function getRadius(row, maxTotal) {
   return 7 + Math.sqrt(ratio) * 20
 }
 
-function toPanelPayload(row) {
-  const total = row.total_complaints || 0
-  return {
-    incident_zip: row.incident_zip,
-    borough: row.borough,
-    noise_total: row.noise_count || 0,
-    rodent_total: row.rodent_count || 0,
-    total_complaints: total,
-    top_complaint_type: row.top_complaint_type || 'Noise / Rodent'
-  }
-}
-
 function setMapSearchStatus(message) {
   const status = document.getElementById('zip-map-status')
   if (status) status.textContent = message
@@ -41,6 +29,8 @@ function setMapSearchStatus(message) {
  *
  * This marker-based layer is intentionally shaped so ZIP GeoJSON can replace
  * the marker loop later while keeping the same click callback contract.
+ * Future boundary support should swap L.circleMarker for L.geoJSON(features)
+ * and call onZipSelect(row) from each feature's click handler.
  */
 export function initZipMap(zipRows, onZipSelect) {
   const container = document.getElementById('zip-map')
@@ -109,7 +99,7 @@ export function initZipMap(zipRows, onZipSelect) {
     `)
 
     marker.on('click', () => {
-      onZipSelect(toPanelPayload(row))
+      onZipSelect(row)
       setMapSearchStatus(`Selected ZIP ${row.incident_zip}`)
     })
 

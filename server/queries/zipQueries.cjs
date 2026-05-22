@@ -24,7 +24,6 @@ function getComplaintsByZip() {
       WHERE incident_zip != ''
         AND latitude IS NOT NULL
         AND longitude IS NOT NULL
-        AND (complaint_type LIKE '%Noise%' OR complaint_type LIKE '%Rodent%')
       GROUP BY incident_zip
     )
     SELECT
@@ -33,7 +32,6 @@ function getComplaintsByZip() {
         SELECT complaint_type
         FROM service_requests s
         WHERE s.incident_zip = z.incident_zip
-          AND (s.complaint_type LIKE '%Noise%' OR s.complaint_type LIKE '%Rodent%')
         GROUP BY complaint_type
         ORDER BY COUNT(*) DESC
         LIMIT 1
