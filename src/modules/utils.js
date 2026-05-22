@@ -2,9 +2,17 @@ export function formatNumber(num) {
   return new Intl.NumberFormat('en-US').format(num)
 }
 
-export function getTopN(data, n = 10) {
-  if (!Array.isArray(data)) return []
-  return data.slice(0, n)
+export function formatBorough(str) {
+  if (!str) return ''
+  return str.toLowerCase().split(' ').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ')
+}
+
+export function getTopN(arr, key, n = 10) {
+  if (!Array.isArray(arr)) return []
+  const sorted = [...arr].sort((a, b) => b[key] - a[key])
+  return sorted.slice(0, n)
 }
 
 export function calculatePercentage(value, total) {

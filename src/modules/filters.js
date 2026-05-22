@@ -1,6 +1,6 @@
 export function initFilters() {
-  // Filter functionality will go here
-  console.log('Initializing filters')
+  // Filter functionality stub - to be implemented later
+  console.log('Filters initialized')
 }
 
 export function applyDateFilter(startDate, endDate) {
