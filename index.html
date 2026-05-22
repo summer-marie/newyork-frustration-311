@@ -451,7 +451,7 @@
             <p id="filter-summary" class="mt-3 px-1 text-xs text-slate-300">Showing all complaint markers across all boroughs.</p>
           </section>
 
-          <section id="zipmap" class="fade-in-delay-3 grid gap-4 xl:grid-cols-[1.25fr_0.56fr_0.5fr]">
+          <section id="zipmap" class="fade-in-delay-3 grid gap-4 xl:grid-cols-[1.4fr_0.8fr_0.6fr]">
             <article class="glass-card rounded-lg p-4">
               <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h2 class="text-sm font-black uppercase text-white">Complaints by ZIP Code</h2>
@@ -527,6 +527,12 @@
             </aside>
           </section>
 
+          <section id="complaints" class="glass-card rounded-lg p-6 mt-0">
+            <h2 class="mb-2 text-sm font-black uppercase text-white">ZIP Codes With Both Noise & Rodent Issues</h2>
+            <p class="mb-4 text-xs text-slate-300">ZIP codes appearing in both top-20 noise and top-20 rodent lists</p>
+            <div id="zip-overlap-table"></div>
+          </section>
+
           <section id="trends" class="grid gap-4 xl:grid-cols-3">
             <article class="glass-card chart-card rounded-lg p-4">
               <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints Over Time</h2>
@@ -540,11 +546,6 @@
               <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints by Hour</h2>
               <canvas id="noise-hour-chart" aria-label="Chart showing complaint patterns by hour of day"></canvas>
             </article>
-          </section>
-
-          <section id="complaints" class="glass-card rounded-lg p-4">
-            <h2 class="mb-4 text-sm font-black uppercase text-white">ZIP Codes with Both Noise & Rodent Issues</h2>
-            <div id="zip-overlap-table"></div>
           </section>
         </div>
       </section>
