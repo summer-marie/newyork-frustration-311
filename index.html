@@ -20,20 +20,31 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at 80% 8%, rgba(168, 85, 247, 0.14), transparent 28rem),
-        radial-gradient(circle at 8% 18%, rgba(78, 167, 255, 0.12), transparent 25rem),
+        linear-gradient(180deg, rgba(2, 5, 10, 0.9) 0%, rgba(4, 8, 15, 0.82) 34%, rgba(2, 4, 8, 0.94) 100%),
+        radial-gradient(circle at 24% 20%, rgba(248, 197, 55, 0.22), transparent 24rem),
+        radial-gradient(circle at 78% 48%, rgba(255, 81, 72, 0.16), transparent 28rem),
+        radial-gradient(circle at 82% 72%, rgba(168, 85, 247, 0.18), transparent 30rem),
+        radial-gradient(circle at 10% 72%, rgba(78, 167, 255, 0.14), transparent 25rem),
+        url('/assets/noir-subway-platform.png'),
         linear-gradient(180deg, #030507 0%, #090e14 48%, #05070a 100%);
+      background-attachment: fixed;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-size: cover;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       letter-spacing: 0;
     }
 
     .subway-scene {
       background:
-        linear-gradient(90deg, rgba(2, 6, 10, 0.9) 0%, rgba(2, 6, 10, 0.48) 44%, rgba(2, 6, 10, 0.12) 100%),
-        repeating-linear-gradient(105deg, rgba(255, 255, 255, 0.09) 0 1px, transparent 1px 54px),
-        linear-gradient(126deg, rgba(248, 197, 55, 0.22) 0 3px, transparent 3px 18%),
-        radial-gradient(circle at 76% 22%, rgba(255, 81, 72, 0.2), transparent 12rem),
+        linear-gradient(90deg, rgba(1, 4, 9, 0.94) 0%, rgba(2, 6, 10, 0.72) 46%, rgba(2, 6, 10, 0.38) 100%),
+        radial-gradient(circle at 20% 22%, rgba(248, 197, 55, 0.24), transparent 18rem),
+        radial-gradient(circle at 80% 28%, rgba(255, 81, 72, 0.22), transparent 15rem),
+        url('/assets/noir-subway-platform.png'),
         linear-gradient(165deg, #20242b 0%, #111820 38%, #06090d 72%);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
       position: relative;
       overflow: hidden;
     }
@@ -43,6 +54,7 @@
       position: absolute;
       inset: 0;
       background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.72)),
         repeating-linear-gradient(0deg, transparent 0 22px, rgba(255, 255, 255, 0.05) 23px 24px),
         linear-gradient(102deg, transparent 0 42%, rgba(0, 0, 0, 0.56) 42% 44%, transparent 44%),
         linear-gradient(78deg, transparent 0 58%, rgba(0, 0, 0, 0.54) 58% 60%, transparent 60%);
@@ -51,7 +63,7 @@
     }
 
     .glass-card {
-      background: linear-gradient(145deg, rgba(12, 18, 28, 0.86), rgba(8, 12, 19, 0.68));
+      background: linear-gradient(145deg, rgba(12, 18, 28, 0.9), rgba(8, 12, 19, 0.78));
       border: 1px solid var(--border);
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(16px);
@@ -68,6 +80,17 @@
 
     .borough-shape {
       clip-path: polygon(18% 8%, 74% 2%, 95% 32%, 84% 74%, 58% 94%, 19% 82%, 3% 43%);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        background-attachment: scroll;
+        background-position: center top;
+      }
+
+      .subway-scene {
+        background-position: 58% center;
+      }
     }
   </style>
 </head>
