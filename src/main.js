@@ -14,9 +14,7 @@
 import {
   initBoroughComparisonChart,
   initComplaintTrendChart,
-  initNoiseByBoroughChart,
-  initNoiseByHourChart,
-  initRodentByBoroughChart
+  initNoiseByHourChart
 } from './modules/charts.js'
 import { initZipOverlapTable } from './modules/table.js'
 import { initFilters } from './modules/filters.js'
@@ -242,8 +240,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
     // Initialize all visualizations with static data
     // These render synchronously, so charts appear immediately on page load
-    initNoiseByBoroughChart(noiseByBorough)
-    initRodentByBoroughChart(rodentByBorough)
     initNoiseByHourChart(noiseByHour)
     initComplaintTrendChart(complaintTrend)
     initBoroughComparisonChart(noiseByBorough, rodentByBorough)
