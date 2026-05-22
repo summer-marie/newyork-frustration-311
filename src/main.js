@@ -89,7 +89,10 @@ function renderLiveFeed(containerId, data) {
 
 function setText(id, value) {
   const element = document.getElementById(id)
-  if (element) element.textContent = value
+  if (element) {
+    element.textContent = value
+    element.classList.remove('loading-pulse')
+  }
 }
 
 function updateZipPanelFromRow(row) {

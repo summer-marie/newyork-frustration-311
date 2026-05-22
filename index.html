@@ -143,6 +143,113 @@
       clip-path: polygon(18% 8%, 74% 2%, 95% 32%, 84% 74%, 58% 94%, 19% 82%, 3% 43%);
     }
 
+    /* KPI card gradient animations */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .kpi-gradient {
+      background-size: 200% 100%;
+      animation: shimmer 8s linear infinite;
+    }
+
+    /* Hover and interaction polish */
+    .glass-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(148, 163, 184, 0.42);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    button, a {
+      transition: all 0.25s ease;
+    }
+
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: 2px;
+    }
+
+    input:focus {
+      outline: 2px solid var(--blue);
+      outline-offset: 1px;
+    }
+
+    /* Consistent heights for chart cards */
+    .chart-card {
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-card canvas {
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Smooth loading states */
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .loading-pulse {
+      animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .fade-in-delay-1 {
+      animation: fadeIn 0.6s ease-out 0.1s forwards;
+      opacity: 0;
+    }
+
+    .fade-in-delay-2 {
+      animation: fadeIn 0.6s ease-out 0.2s forwards;
+      opacity: 0;
+    }
+
+    .fade-in-delay-3 {
+      animation: fadeIn 0.6s ease-out 0.3s forwards;
+      opacity: 0;
+    }
+
+    /* Better scrollbar for dark theme */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.5);
+    }
+
     @media (max-width: 768px) {
       body {
         background-attachment: scroll;
@@ -151,6 +258,10 @@
 
       .subway-scene {
         background-position: 58% center;
+      }
+
+      .glass-card:hover {
+        transform: none;
       }
     }
   </style>
@@ -164,19 +275,19 @@
           <span class="text-sm font-black uppercase tracking-normal text-red-500">Insights</span>
         </a>
         <div class="order-3 flex w-full items-center gap-1 overflow-x-auto text-xs font-semibold uppercase text-slate-300 sm:order-2 sm:w-auto sm:justify-center">
-          <a href="#" class="border-b-2 border-white px-4 py-5 text-white">Dashboard</a>
-          <a href="#" class="px-4 py-5 hover:text-white">Complaints</a>
-          <a href="#" class="px-4 py-5 hover:text-white">Trends</a>
-          <a href="#" class="px-4 py-5 hover:text-white">ZIP Code Map</a>
-          <a href="#" class="px-4 py-5 hover:text-white">About</a>
+          <a href="#dashboard" class="border-b-2 border-white px-4 py-5 text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">Dashboard</a>
+          <a href="#complaints" class="border-b-2 border-transparent px-4 py-5 hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">Complaints</a>
+          <a href="#trends" class="border-b-2 border-transparent px-4 py-5 hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">Trends</a>
+          <a href="#zipmap" class="border-b-2 border-transparent px-4 py-5 hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">ZIP Code Map</a>
+          <a href="#about" class="border-b-2 border-transparent px-4 py-5 hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">About</a>
         </div>
         <div class="order-2 flex items-center gap-3 sm:order-3">
-          <button class="grid h-10 w-10 place-items-center rounded-md border border-slate-600/70 text-slate-200 hover:border-blue-400 hover:text-blue-300" aria-label="Toggle theme">
+          <button class="grid h-10 w-10 place-items-center rounded-md border border-slate-600/70 text-slate-200 transition-all hover:border-blue-400 hover:bg-blue-400/10 hover:text-blue-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400" aria-label="Toggle theme">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8Z"/>
             </svg>
           </button>
-          <button class="flex h-10 items-center gap-2 rounded-md border border-slate-600/70 px-4 text-sm font-semibold text-white hover:border-yellow-400">
+          <button class="flex h-10 items-center gap-2 rounded-md border border-slate-600/70 px-4 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M4 5h16M7 12h10M10 19h4"/>
               <path d="M8 5l4 7v5"/>
@@ -190,7 +301,7 @@
       </nav>
 
       <section class="grid gap-4 p-4 lg:grid-cols-[1.05fr_1.95fr] lg:p-6">
-        <div class="subway-scene min-h-[430px] rounded-lg border border-slate-600/40 p-6 sm:p-8 lg:min-h-[790px]">
+        <div class="subway-scene fade-in min-h-[430px] rounded-lg border border-slate-600/40 p-6 sm:p-8 lg:min-h-[790px]">
           <div class="relative z-10 flex h-full flex-col justify-between">
             <div>
               <p class="mb-4 text-xs font-black uppercase text-blue-300">Hero Section</p>
@@ -200,7 +311,7 @@
               <p class="mt-5 max-w-md text-base leading-7 text-slate-200">
                 Explore 311 noise and rodent complaints by ZIP code, borough, and time with a street-level look at where quality-of-life calls cluster.
               </p>
-              <label class="mt-8 flex max-w-md items-center gap-3 rounded-md border border-slate-500/70 bg-black/55 px-4 py-3 text-slate-300 shadow-xl">
+              <label class="mt-8 flex max-w-md items-center gap-3 rounded-md border border-slate-500/70 bg-black/55 px-4 py-3 text-slate-300 shadow-xl transition-all focus-within:border-yellow-400 focus-within:bg-black/70">
                 <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-white" fill="none" stroke="currentColor" stroke-width="1.8">
                   <circle cx="11" cy="11" r="7"/>
                   <path d="m20 20-3.5-3.5"/>
@@ -209,10 +320,10 @@
               </label>
               <div class="mt-5 flex flex-wrap gap-2 text-xs text-slate-300">
                 <span class="mr-1 py-2">Popular searches:</span>
-                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">10001</button>
-                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">11211</button>
-                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">11375</button>
-                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 hover:border-yellow-400">10467</button>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 transition-all hover:border-yellow-400 hover:bg-yellow-400/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">10001</button>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 transition-all hover:border-yellow-400 hover:bg-yellow-400/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">11211</button>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 transition-all hover:border-yellow-400 hover:bg-yellow-400/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">11375</button>
+                <button class="rounded-md border border-slate-600/80 bg-black/45 px-3 py-2 transition-all hover:border-yellow-400 hover:bg-yellow-400/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">10467</button>
               </div>
             </div>
             <div class="relative z-10 mt-10 flex items-center gap-2 text-xs font-semibold text-slate-400">
@@ -223,77 +334,77 @@
         </div>
 
         <div class="space-y-4">
-          <section class="grid gap-4 md:grid-cols-3">
-            <article class="glass-card rounded-lg p-5">
+          <section class="fade-in-delay-1 grid gap-4 md:grid-cols-3">
+            <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
               <div class="flex items-start justify-between gap-4">
-                <div class="grid h-11 w-11 place-items-center rounded-md border border-red-400/50 text-red-400">
+                <div class="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-red-400/50 text-red-400">
                   <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
                     <path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/>
                   </svg>
                 </div>
-                <div class="h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-red-500/50 to-red-400/70"></div>
+                <div class="kpi-gradient h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-red-500/50 to-red-400/70"></div>
               </div>
               <p class="mt-4 text-xs font-semibold uppercase text-slate-300">Noise Complaints</p>
-              <div id="stat-noise" class="mt-2 text-4xl font-bold text-white">...</div>
-              <p class="mt-2 text-sm text-red-300">Loud streets, parties, vehicles, and construction calls</p>
+              <div id="stat-noise" class="loading-pulse mt-2 text-4xl font-bold text-white">—</div>
+              <p class="mt-auto pt-2 text-sm text-red-300">Loud streets, parties, vehicles, and construction calls</p>
             </article>
 
-            <article class="glass-card rounded-lg p-5">
+            <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
               <div class="flex items-start justify-between gap-4">
-                <div class="grid h-11 w-11 place-items-center rounded-md border border-purple-400/50 text-purple-300">
+                <div class="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-purple-400/50 text-purple-300">
                   <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
                     <path d="M6 16c.6-4.3 3.2-7 7.8-8.2L16 4l2.3 3.4c1.6.6 2.7 1.7 3.2 3.3"/>
                     <path d="M4 17c2.6 2.7 7.7 3 15.4 1 .9-.2 1.4-1.2 1-2.1-.4-.9-1.4-1.3-2.3-1l-2 .7"/>
                     <circle cx="16.5" cy="10.5" r=".8" fill="currentColor"/>
                   </svg>
                 </div>
-                <div class="h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-purple-500/50 to-purple-300/80"></div>
+                <div class="kpi-gradient h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-purple-500/50 to-purple-300/80"></div>
               </div>
               <p class="mt-4 text-xs font-semibold uppercase text-slate-300">Rodent Complaints</p>
-              <div id="stat-rodent" class="mt-2 text-4xl font-bold text-white">...</div>
-              <p class="mt-2 text-sm text-purple-200">Rat sightings, baiting requests, and pest conditions</p>
+              <div id="stat-rodent" class="loading-pulse mt-2 text-4xl font-bold text-white">—</div>
+              <p class="mt-auto pt-2 text-sm text-purple-200">Rat sightings, baiting requests, and pest conditions</p>
             </article>
 
-            <article class="glass-card rounded-lg p-5">
+            <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
               <div class="flex items-start justify-between gap-4">
-                <div class="grid h-11 w-11 place-items-center rounded-md border border-blue-400/50 text-blue-300">
+                <div class="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-blue-400/50 text-blue-300">
                   <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
                     <path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/>
                     <circle cx="12" cy="9" r="2.4"/>
                   </svg>
                 </div>
-                <div class="h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-blue-500/50 to-blue-300/80"></div>
+                <div class="kpi-gradient h-10 w-20 rounded-md bg-gradient-to-r from-transparent via-blue-500/50 to-blue-300/80"></div>
               </div>
               <p class="mt-4 text-xs font-semibold uppercase text-slate-300">ZIP Codes With Complaints</p>
-              <div id="stat-overlap" class="mt-2 text-4xl font-bold text-white">...</div>
-              <p class="mt-2 text-sm text-blue-200">ZIPs appearing in both top complaint lists</p>
+              <div id="stat-overlap" class="loading-pulse mt-2 text-4xl font-bold text-white">—</div>
+              <p class="mt-auto pt-2 text-sm text-blue-200">ZIPs appearing in both top complaint lists</p>
             </article>
           </section>
 
-          <section class="glass-card rounded-lg p-3">
+          <section class="fade-in-delay-2 glass-card rounded-lg p-3">
             <div class="grid gap-3 md:grid-cols-4">
-              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left">
+              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left transition-all hover:border-slate-500 hover:bg-black/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 <span>
                   <span class="block text-xs text-slate-400">Date Range</span>
                   <span class="text-sm font-semibold text-white">Jan 1, 2023 - Dec 31, 2023</span>
                 </span>
-                <span class="text-slate-400">v</span>
+                <span class="text-slate-400">▾</span>
               </button>
-              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left">
+              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left transition-all hover:border-slate-500 hover:bg-black/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 <span>
                   <span class="block text-xs text-slate-400">Complaint Type</span>
                   <span class="text-sm font-semibold text-white">All Types</span>
                 </span>
-                <span class="text-slate-400">v</span>
+                <span class="text-slate-400">▾</span>
               </button>
-              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left">
+              <button class="flex items-center justify-between rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-left transition-all hover:border-slate-500 hover:bg-black/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 <span>
                   <span class="block text-xs text-slate-400">Borough</span>
                   <span class="text-sm font-semibold text-white">All Boroughs</span>
                 </span>
-                <span class="text-slate-400">v</span>
+                <span class="text-slate-400">▾</span>
               </button>
-              <button class="flex items-center justify-center gap-3 rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-sm font-semibold text-white hover:border-yellow-400">
+              <button class="flex items-center justify-center gap-3 rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 More Filters
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M4 7h10M18 7h2M4 17h2M10 17h10M7 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
@@ -302,7 +413,7 @@
             </div>
           </section>
 
-          <section class="grid gap-4 xl:grid-cols-[1.25fr_0.56fr_0.5fr]">
+          <section class="fade-in-delay-3 grid gap-4 xl:grid-cols-[1.25fr_0.56fr_0.5fr]">
             <article class="glass-card rounded-lg p-4">
               <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h2 class="text-sm font-black uppercase text-white">Complaints by ZIP Code</h2>
@@ -329,7 +440,7 @@
             <aside class="glass-card rounded-lg p-4">
               <div class="mb-5 flex items-center justify-between">
                 <h2 id="zip-panel-title" class="text-sm font-black uppercase text-white">ZIP Code Detail</h2>
-                <button class="text-xl text-slate-400" aria-label="Close ZIP details">&times;</button>
+                <button class="grid h-8 w-8 place-items-center rounded-md text-2xl text-slate-400 transition-all hover:bg-slate-700/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400" aria-label="Close ZIP details">&times;</button>
               </div>
               <div class="border-b border-slate-700/80 pb-4">
                 <p class="text-xs font-black uppercase text-slate-300">Overview</p>
@@ -357,7 +468,7 @@
                   </div>
                 </div>
               </div>
-              <button class="mt-2 w-full rounded-md border border-slate-600/80 bg-black/35 px-4 py-3 text-sm font-semibold text-white hover:border-blue-400">View ZIP Complaints</button>
+              <button class="mt-2 w-full rounded-md border border-slate-600/80 bg-black/35 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-blue-400 hover:bg-blue-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400">View ZIP Complaints</button>
             </aside>
 
             <aside class="glass-card rounded-lg p-4">
@@ -379,17 +490,17 @@
           </section>
 
           <section class="grid gap-4 xl:grid-cols-3">
-            <article class="glass-card rounded-lg p-4">
+            <article class="glass-card chart-card rounded-lg p-4">
               <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints Over Time</h2>
-              <canvas id="complaints-trend-chart" class="max-h-[260px]"></canvas>
+              <canvas id="complaints-trend-chart" aria-label="Line chart showing complaints over time"></canvas>
             </article>
-            <article class="glass-card rounded-lg p-4">
+            <article class="glass-card chart-card rounded-lg p-4">
               <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints by Borough</h2>
-              <canvas id="borough-comparison-chart" class="max-h-[260px]"></canvas>
+              <canvas id="borough-comparison-chart" aria-label="Bar chart comparing complaints by borough"></canvas>
             </article>
-            <article class="glass-card rounded-lg p-4">
+            <article class="glass-card chart-card rounded-lg p-4">
               <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints by Hour</h2>
-              <canvas id="noise-hour-chart" class="max-h-[260px]"></canvas>
+              <canvas id="noise-hour-chart" aria-label="Chart showing complaint patterns by hour of day"></canvas>
             </article>
           </section>
         </div>
