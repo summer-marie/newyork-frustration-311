@@ -195,7 +195,7 @@ export function initNoiseByBoroughChart(data) {
     options: {
       indexAxis: 'y',  // Horizontal bars (y-axis shows borough labels)
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           display: false  // Hide legend since single dataset is self-explanatory
@@ -253,7 +253,7 @@ export function initRodentByBoroughChart(data) {
     options: {
       indexAxis: 'y',
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           display: false
@@ -313,7 +313,7 @@ export function initNoiseByHourChart(data) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           display: false

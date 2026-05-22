@@ -55,7 +55,7 @@
       inset: 0;
       background:
         linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.72)),
-        repeating-linear-gradient(0deg, transparent 0 22px, rgba(255, 255, 255, 0.05) 23px 24px),
+        repeating-linear-gradient(0deg, transparent 0 1.375rem, rgba(255, 255, 255, 0.05) 1.4375rem 1.5rem),
         linear-gradient(102deg, transparent 0 42%, rgba(0, 0, 0, 0.56) 42% 44%, transparent 44%),
         linear-gradient(78deg, transparent 0 58%, rgba(0, 0, 0, 0.54) 58% 60%, transparent 60%);
       opacity: 0.62;
@@ -65,8 +65,8 @@
     .glass-card {
       background: linear-gradient(145deg, rgba(12, 18, 28, 0.9), rgba(8, 12, 19, 0.78));
       border: 1px solid var(--border);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(16px);
+      box-shadow: 0 1.25rem 3.75rem rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(1rem);
     }
 
     .map-grid {
@@ -75,12 +75,12 @@
         linear-gradient(30deg, rgba(255, 255, 255, 0.05) 12%, transparent 12% 88%, rgba(255, 255, 255, 0.05) 88%),
         linear-gradient(150deg, rgba(255, 255, 255, 0.04) 12%, transparent 12% 88%, rgba(255, 255, 255, 0.04) 88%),
         #071018;
-      background-size: auto, 86px 86px, 86px 86px, auto;
+      background-size: auto, 5.375rem 5.375rem, 5.375rem 5.375rem, auto;
     }
 
     #zip-map {
-      min-height: 420px;
-      height: clamp(420px, 48vw, 620px);
+      min-height: 26.25rem;
+      height: clamp(26.25rem, 48vw, 38.75rem);
       width: 100%;
       background: #071018;
     }
@@ -107,40 +107,40 @@
       background: rgba(5, 9, 16, 0.94);
       border: 1px solid rgba(148, 163, 184, 0.32);
       color: #f8fafc;
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 1.125rem 3.125rem rgba(0, 0, 0, 0.45);
     }
 
     .leaflet-popup-content {
-      margin: 12px 14px;
+      margin: 0.75rem 0.875rem;
     }
 
     .zip-popup {
       display: grid;
-      gap: 4px;
-      min-width: 150px;
-      font-size: 12px;
+      gap: 0.25rem;
+      min-width: 9.375rem;
+      font-size: 0.75rem;
       line-height: 1.35;
     }
 
     .zip-popup strong {
       color: var(--yellow);
-      font-size: 13px;
+      font-size: 0.8125rem;
     }
 
     .leaflet-tooltip {
       background: rgba(3, 7, 13, 0.92);
       border: 1px solid rgba(248, 197, 55, 0.32);
       color: #f8fafc;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36);
+      box-shadow: 0 0.75rem 1.875rem rgba(0, 0, 0, 0.36);
     }
 
     .zip-complaint-marker {
-      filter: drop-shadow(0 0 12px rgba(248, 197, 55, 0.26));
+      filter: drop-shadow(0 0 0.75rem rgba(248, 197, 55, 0.26));
       cursor: pointer;
     }
 
     .zip-complaint-marker.is-selected {
-      filter: drop-shadow(0 0 18px rgba(248, 197, 55, 0.72));
+      filter: drop-shadow(0 0 1.125rem rgba(248, 197, 55, 0.72));
     }
 
     .filter-select {
@@ -185,8 +185,8 @@
 
     .glass-card:hover {
       border-color: rgba(148, 163, 184, 0.42);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transform: translateY(-2px);
+      box-shadow: 0 1.5rem 5rem rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transform: translateY(-0.125rem);
     }
 
     button, a {
@@ -194,18 +194,18 @@
     }
 
     button:focus-visible, a:focus-visible {
-      outline: 2px solid var(--yellow);
-      outline-offset: 2px;
+      outline: 0.125rem solid var(--yellow);
+      outline-offset: 0.125rem;
     }
 
     input:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 1px;
+      outline: 0.125rem solid var(--blue);
+      outline-offset: 0.0625rem;
     }
 
     /* Consistent heights for chart cards */
     .chart-card {
-      min-height: 360px;
+      min-height: 22.5rem;
       display: flex;
       flex-direction: column;
     }
@@ -228,7 +228,7 @@
     @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(0.625rem);
       }
       to {
         opacity: 1;
@@ -257,8 +257,8 @@
 
     /* Better scrollbar for dark theme */
     ::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
+      width: 0.625rem;
+      height: 0.625rem;
     }
 
     ::-webkit-scrollbar-track {
@@ -267,14 +267,14 @@
 
     ::-webkit-scrollbar-thumb {
       background: rgba(148, 163, 184, 0.3);
-      border-radius: 5px;
+      border-radius: 0.3125rem;
     }
 
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(148, 163, 184, 0.5);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       body {
         background-attachment: scroll;
         background-position: center top;
@@ -291,7 +291,7 @@
   </style>
 </head>
 <body class="text-slate-100 antialiased">
-  <main class="mx-auto min-h-screen w-full max-w-[1536px] px-4 py-4 sm:px-6 lg:px-8">
+  <main class="mx-auto min-h-screen w-full max-w-[96rem] px-4 py-4 sm:px-6 lg:px-8">
     <div class="overflow-hidden rounded-lg border border-slate-600/40 bg-black/35 shadow-2xl">
       <nav class="flex min-h-16 flex-wrap items-center justify-between gap-4 border-b border-slate-700/70 px-5 py-3 lg:px-7">
         <a href="#" class="flex items-baseline gap-2">
@@ -325,7 +325,7 @@
       </nav>
 
       <section class="grid gap-4 p-4 lg:grid-cols-[1.05fr_1.95fr] lg:p-6">
-        <div class="subway-scene fade-in min-h-[430px] rounded-lg border border-slate-600/40 p-6 sm:p-8 lg:min-h-[790px]">
+        <div class="subway-scene fade-in min-h-[26.875rem] rounded-lg border border-slate-600/40 p-6 sm:p-8 lg:min-h-[49.375rem]">
           <div class="relative z-10 flex h-full flex-col justify-between">
             <div>
               <p class="mb-4 text-xs font-black uppercase text-blue-300">Hero Section</p>
@@ -359,7 +359,7 @@
 
         <div class="space-y-4">
           <section class="fade-in-delay-1 grid gap-4 md:grid-cols-3">
-            <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
+            <article class="glass-card flex min-h-[11.25rem] flex-col rounded-lg p-5">
               <div class="flex items-start justify-between gap-4">
                 <div class="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-red-400/50 text-red-400">
                   <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
@@ -373,7 +373,7 @@
               <p id="stat-noise-trend" class="mt-auto pt-2 text-sm text-red-300">Loud streets, parties, vehicles, and construction calls</p>
             </article>
 
-            <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
+            <article class="glass-card flex min-h-[11.25rem] flex-col rounded-lg p-5">
               <div class="flex items-start justify-between gap-4">
                 <div class="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-purple-400/50 text-purple-300">
                   <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
@@ -389,7 +389,7 @@
               <p id="stat-rodent-trend" class="mt-auto pt-2 text-sm text-purple-200">Rat sightings, baiting requests, and pest conditions</p>
             </article>
 
-            <article class="glass-card flex min-h-[180px] flex-col rounded-lg p-5">
+            <article class="glass-card flex min-h-[11.25rem] flex-col rounded-lg p-5">
               <div class="flex items-start justify-between gap-4">
                 <div class="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-blue-400/50 text-blue-300">
                   <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7">
@@ -466,7 +466,7 @@
             <article class="glass-card rounded-lg p-4">
               <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h2 class="text-sm font-black uppercase text-white">Complaints by ZIP Code</h2>
-                <label class="flex h-10 w-full max-w-[240px] items-center gap-2 rounded-md border border-slate-700 bg-black/35 px-3">
+                <label class="flex h-10 w-full max-w-[15rem] items-center gap-2 rounded-md border border-slate-700 bg-black/35 px-3">
                   <input id="zip-map-search" class="min-w-0 flex-1 bg-transparent text-xs text-white placeholder:text-slate-400 focus:outline-none" placeholder="Search ZIP code" inputmode="numeric" aria-label="Search map ZIP code">
                   <button id="zip-map-search-button" type="button" class="text-slate-300 hover:text-yellow-300" aria-label="Search ZIP code on map">
                     <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -476,7 +476,7 @@
                   </button>
                 </label>
               </div>
-              <div class="map-grid relative min-h-[420px] overflow-hidden rounded-md border border-slate-700/80">
+              <div class="map-grid relative min-h-[26.25rem] overflow-hidden rounded-md border border-slate-700/80">
                 <div id="zip-map" aria-label="Interactive NYC ZIP complaint map"></div>
                 <div class="pointer-events-none absolute bottom-4 right-4 z-[500] rounded-md border border-slate-700/80 bg-black/70 px-4 py-3 text-sm shadow-xl backdrop-blur">
                   <div id="map-focus-zip" class="font-mono text-white">ZIP</div>
