@@ -1,0 +1,112 @@
+NYC 311 Backend API - Setup Complete
+=====================================
+
+✅ BACKEND STRUCTURE CREATED
+----------------------------
+
+server/
+  ├── db.cjs                      ← Database connection (nyc_311_2023.db)
+  ├── index.cjs                   ← Express app (port 3001)
+  ├── queries/
+  │   ├── noiseQueries.cjs        ← 4 noise query functions
+  │   ├── rodentQueries.cjs       ← 2 rodent query functions
+  │   └── overlapQueries.cjs      ← ZIP overlap analysis
+  └── routes/
+      └── api.cjs                 ← REST API router with 7 endpoints
+
+
+✅ API ENDPOINTS (Running on http://localhost:3001)
+---------------------------------------------------
+
+Noise Endpoints:
+  GET /api/noise/by-borough       → Noise complaints by NYC borough
+  GET /api/noise/by-hour          → Noise complaints by hour (0-23)
+  GET /api/noise/by-zip           → Top 20 ZIPs by noise volume
+  GET /api/noise/by-type          → Breakdown by complaint type
+
+Rodent Endpoints:
+  GET /api/rodent/by-borough      → Rodent complaints by NYC borough
+  GET /api/rodent/by-zip          → Top 20 ZIPs by rodent volume
+
+Analysis Endpoints:
+  GET /api/overlap/zip            → ZIPs in both top-20 lists
+
+
+✅ TESTED & VERIFIED
+--------------------
+
+✓ Express server starts on port 3001 without errors
+✓ All 7 API endpoints return real JSON data from database
+✓ Vite dev server proxy configured (/api → localhost:3001)
+✓ Both servers can run simultaneously
+
+Test Results:
+  • /api/noise/by-borough   → 5 boroughs, Brooklyn leads (1,047)
+  • /api/rodent/by-borough  → 5 boroughs, Brooklyn leads (125)
+  • /api/overlap/zip        → 6 overlapping ZIPs, all in Brooklyn
+
+
+✅ PACKAGE.JSON SCRIPTS
+-----------------------
+
+npm run server       → Start Express API server (port 3001)
+npm run dev:server   → Same as above (alias)
+npm run dev          → Start Vite dev server (port 5173)
+
+
+✅ HOW TO RUN BOTH SERVERS
+--------------------------
+
+Terminal 1:  npm run server
+Terminal 2:  npm run dev
+
+The frontend (port 5173) can now fetch from /api/... 
+and Vite will proxy to the Express backend (port 3001).
+
+
+✅ EXAMPLE USAGE IN FRONTEND
+----------------------------
+
+// Fetch noise data from API instead of importing JSON
+async function loadNoiseData() {
+  const response = await fetch('/api/noise/by-borough')
+  const data = await response.json()
+  initNoiseByBoroughChart(data)
+}
+
+// Fetch overlap data
+async function loadOverlapData() {
+  const response = await fetch('/api/overlap/zip')
+  const data = await response.json()
+  initZipOverlapTable(data)
+}
+
+
+✅ DEPENDENCIES INSTALLED
+-------------------------
+
+• express       → Web framework
+• cors          → Cross-origin resource sharing
+• better-sqlite3 → SQLite database (already installed)
+
+
+✅ CONFIGURATION CHANGES
+------------------------
+
+vite.config.js
+  Added proxy: { '/api': 'http://localhost:3001' }
+
+package.json
+  Added "server" and "dev:server" scripts
+
+
+✅ NO GIT COMMITS MADE
+----------------------
+
+All changes are staged but not committed.
+You can review and commit manually when ready.
+
+
+============================================
+🎉 Backend API is fully functional!
+============================================
