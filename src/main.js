@@ -109,11 +109,10 @@ function renderLiveError() {
 }
 
 function setText(id, value) {
-  const element = document.getElementById(id)
-  if (element) {
-    element.textContent = value
-    element.classList.remove('loading-pulse')
-  }
+  const el = document.getElementById(id)
+  if (!el) return
+  el.textContent = value
+  el.classList.remove('loading-pulse')
 }
 
 async function loadJson(path) {
