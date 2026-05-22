@@ -295,25 +295,25 @@
           <a href="#about" class="border-b-2 border-transparent px-4 py-5 hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">About</a>
         </div>
         <div class="order-2 flex items-center gap-3 sm:order-3">
-          <button class="grid h-10 w-10 place-items-center rounded-md border border-slate-600/70 text-slate-200 transition-all hover:border-blue-400 hover:bg-blue-400/10 hover:text-blue-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400" aria-label="Toggle theme">
+          <button id="theme-toggle" class="grid h-10 w-10 place-items-center rounded-md border border-slate-600/70 text-slate-200 transition-all hover:border-blue-400 hover:bg-blue-400/10 hover:text-blue-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400" aria-label="Toggle theme">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8Z"/>
             </svg>
           </button>
-          <button class="flex h-10 items-center gap-2 rounded-md border border-slate-600/70 px-4 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
+          <button id="nav-filters-btn" class="flex h-10 items-center gap-2 rounded-md border border-slate-600/70 px-4 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M4 5h16M7 12h10M10 19h4"/>
               <path d="M8 5l4 7v5"/>
             </svg>
             Filters
-            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
+            <svg id="nav-filters-icon" viewBox="0 0 24 24" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="m6 9 6 6 6-6"/>
             </svg>
           </button>
         </div>
       </nav>
 
-      <section class="grid gap-4 p-4 lg:grid-cols-[1.05fr_1.95fr] lg:p-6">
+      <section id="dashboard" class="grid gap-4 p-4 lg:grid-cols-[1.05fr_1.95fr] lg:p-6">
         <div class="subway-scene fade-in min-h-[26.875rem] rounded-lg border border-slate-600/40 p-6 sm:p-8 lg:min-h-[49.375rem]">
           <div class="relative z-10 flex h-full flex-col justify-between">
             <div>
@@ -417,7 +417,7 @@
                 </span>
                 <span class="text-slate-400">v</span>
               </button>
-              <button class="flex items-center justify-center gap-3 rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
+              <button id="more-filters-btn" class="flex items-center justify-center gap-3 rounded-md border border-slate-700/80 bg-black/30 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-yellow-400 hover:bg-yellow-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400">
                 More Filters
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M4 7h10M18 7h2M4 17h2M10 17h10M7 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
@@ -478,7 +478,7 @@
             <aside class="glass-card rounded-lg p-4">
               <div class="mb-5 flex items-center justify-between">
                 <h2 id="zip-panel-title" class="text-sm font-black uppercase text-white">ZIP Code Detail</h2>
-                <button class="grid h-8 w-8 place-items-center rounded-md text-2xl text-slate-400 transition-all hover:bg-slate-700/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400" aria-label="Close ZIP details">&times;</button>
+                <button id="zip-panel-close" class="grid h-8 w-8 place-items-center rounded-md text-2xl text-slate-400 transition-all hover:bg-slate-700/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400" aria-label="Close ZIP details">&times;</button>
               </div>
               <div class="border-b border-slate-700/80 pb-4">
                 <p class="text-xs font-black uppercase text-slate-300">Overview</p>
@@ -506,7 +506,7 @@
                   </div>
                 </div>
               </div>
-              <button class="mt-2 w-full rounded-md border border-slate-600/80 bg-black/35 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-blue-400 hover:bg-blue-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400">View ZIP Complaints</button>
+              <button id="view-zip-complaints-btn" class="mt-2 w-full rounded-md border border-slate-600/80 bg-black/35 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-blue-400 hover:bg-blue-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400">View ZIP Complaints</button>
             </aside>
 
             <aside class="glass-card rounded-lg p-4">
@@ -527,7 +527,7 @@
             </aside>
           </section>
 
-          <section class="grid gap-4 xl:grid-cols-3">
+          <section id="trends" class="grid gap-4 xl:grid-cols-3">
             <article class="glass-card chart-card rounded-lg p-4">
               <h2 class="mb-4 text-sm font-black uppercase text-white">Complaints Over Time</h2>
               <canvas id="complaints-trend-chart" aria-label="Line chart showing complaints over time"></canvas>
@@ -541,7 +541,17 @@
               <canvas id="noise-hour-chart" aria-label="Chart showing complaint patterns by hour of day"></canvas>
             </article>
           </section>
+
+          <section id="complaints" class="glass-card rounded-lg p-4">
+            <h2 class="mb-4 text-sm font-black uppercase text-white">ZIP Codes with Both Noise & Rodent Issues</h2>
+            <div id="zip-overlap-table"></div>
+          </section>
         </div>
+      </section>
+
+      <section id="about" class="glass-card mx-4 mb-4 rounded-lg p-6 lg:mx-6 lg:mb-6">
+        <h2 class="mb-3 text-lg font-black uppercase text-white">About This Dashboard</h2>
+        <p class="text-sm leading-relaxed text-slate-300">This dashboard analyzes NYC 311 complaints data to reveal patterns in noise and rodent complaints across the five boroughs. Data is sourced from NYC Open Data and our local SQLite database.</p>
       </section>
     </div>
   </main>

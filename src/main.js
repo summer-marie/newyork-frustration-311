@@ -108,6 +108,73 @@ function renderLiveError() {
   if (noise) noise.innerHTML = errorHtml
 }
 
+/**
+ * Wire up UI button handlers
+ */
+function wireUIHandlers() {
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle')
+  themeToggle?.addEventListener('click', () => {
+    document.documentElement.classList.toggle('light-theme')
+    console.log('Theme toggle clicked (light theme not yet implemented)')
+  })
+
+  // Nav filters button - scroll to filter section
+  const navFiltersBtn = document.getElementById('nav-filters-btn')
+  const navFiltersIcon = document.getElementById('nav-filters-icon')
+  navFiltersBtn?.addEventListener('click', () => {
+    document.getElementById('zipmap')?.scrollIntoView({ behavior: 'smooth' })
+    navFiltersIcon?.classList.toggle('rotate-180')
+  })
+
+  // More filters button - scroll to filter section with message
+  const moreFiltersBtn = document.getElementById('more-filters-btn')
+  moreFiltersBtn?.addEventListener('click', () => {
+    const summary = document.getElementById('filter-summary')
+    if (summary) {
+      summary.textContent = 'Advanced filters coming soon! Use the dropdowns above to filter by type and borough.'
+      setTimeout(() => {
+        const typeFilter = document.getElementById('complaint-type-filter')
+        typeFilter?.focus()
+      }, 100)
+    }
+  })
+
+  // ZIP panel close button
+  const zipPanelClose = document.getElementById('zip-panel-close')
+  zipPanelClose?.addEventListener('click', () => {
+    // Reset to placeholder state
+    setText('zip-panel-title', 'ZIP Code Detail')
+    setText('zip-panel-total', '...')
+    setText('zip-panel-noise', '...')
+    setText('zip-panel-rodent', '...')
+    setText('zip-panel-top-type', '...')
+    setText('zip-panel-borough', '...')
+    setText('zip-bar-noise', '...')
+    setText('zip-bar-rodent', '...')
+    setText('map-focus-zip', 'ZIP')
+    setText('map-focus-total', 'Loading complaints')
+    const noiseFill = document.getElementById('zip-bar-noise-fill')
+    const rodentFill = document.getElementById('zip-bar-rodent-fill')
+    if (noiseFill) noiseFill.style.width = '50%'
+    if (rodentFill) rodentFill.style.width = '50%'
+  })
+
+  // View ZIP complaints button
+  const viewZipBtn = document.getElementById('view-zip-complaints-btn')
+  viewZipBtn?.addEventListener('click', () => {
+    const zipTitle = document.getElementById('zip-panel-title')?.textContent || ''
+    const zipMatch = zipTitle.match(/\d{5}/)
+    if (zipMatch) {
+      const zip = zipMatch[0]
+      const url = `https://portal.311.nyc.gov/check-status/?zip=${zip}`
+      window.open(url, '_blank', 'noopener,noreferrer')
+    } else {
+      alert('Please select a ZIP code first by clicking a marker on the map.')
+    }
+  })
+}
+
 function setText(id, value) {
   const el = document.getElementById(id)
   if (!el) return
@@ -268,6 +335,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('zipmap')?.scrollIntoView({ behavior: 'smooth' })
       })
     })
+
+    // Wire up UI buttons
+    wireUIHandlers()
   } catch (error) {
     console.error('Error loading dashboard data:', error)
     setText('stat-noise', 'Error')
