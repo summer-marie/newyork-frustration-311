@@ -23,6 +23,7 @@ nyc_311_2023-2.db
 *.db
 export-data.cjs
 export-data.js
+*.txt
 
 # OS files
 .DS_Store

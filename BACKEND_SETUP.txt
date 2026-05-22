@@ -103,10 +103,4 @@ package.json
 ✅ NO GIT COMMITS MADE
 ----------------------
 
-All changes are staged but not committed.
-You can review and commit manually when ready.
 
-
-============================================
-🎉 Backend API is fully functional!
-============================================

@@ -22,8 +22,6 @@ export default defineConfig({
   
   // Development server configuration
   server: {
-    // Proxy API requests to Express backend
-    // When frontend calls fetch('/api/...'), it forwards to port 3001
     proxy: {
       '/api': 'http://localhost:3001'
     }
