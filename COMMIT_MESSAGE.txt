@@ -1,0 +1,15 @@
+Implement complete NYC 311 data visualization with dark theme
+
+- Add NYC gritty dark theme (#1a1a2e background, yellow/red accents)
+- Implement 3 Chart.js visualizations (noise/rodent by borough, noise by hour)
+- Add ZIP overlap analysis table showing areas with both noise and rodent complaints
+- Create stat bar displaying total noise (3,481), rodent (387), and overlapping ZIPs (6)
+- Add live feed cards fetching latest complaints from NYC Open Data API
+- Implement utility functions for data formatting and manipulation
+- Export 7 JSON datasets from SQLite database using better-sqlite3
+- Configure Vite for JSON module imports
+- Add comprehensive developer comments explaining logic, data flow, and TODOs
+
+All charts render with real 2023 NYC 311 data. Live API integration displays
+most recent complaints with pulsing status indicator. Code is fully documented
+for team collaboration.
