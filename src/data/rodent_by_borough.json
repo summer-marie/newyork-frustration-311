@@ -1,0 +1,22 @@
+[
+  {
+    "borough": "Brooklyn",
+    "count": 45678
+  },
+  {
+    "borough": "Manhattan",
+    "count": 43210
+  },
+  {
+    "borough": "Bronx",
+    "count": 34567
+  },
+  {
+    "borough": "Queens",
+    "count": 28901
+  },
+  {
+    "borough": "Staten Island",
+    "count": 12345
+  }
+]
