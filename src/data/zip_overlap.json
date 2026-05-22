@@ -1,37 +1,38 @@
 [
   {
-    "zipCode": "10001",
-    "borough": "Manhattan",
-    "noiseCount": 8765,
-    "rodentCount": 4321,
-    "totalComplaints": 13086
+    "incident_zip": "11220",
+    "borough": "BROOKLYN",
+    "noise_total": 37,
+    "rodent_total": 7
   },
   {
-    "zipCode": "11201",
-    "borough": "Brooklyn",
-    "noiseCount": 7654,
-    "rodentCount": 5432,
-    "totalComplaints": 13086
+    "incident_zip": "11221",
+    "borough": "BROOKLYN",
+    "noise_total": 36,
+    "rodent_total": 5
   },
   {
-    "zipCode": "10003",
-    "borough": "Manhattan",
-    "noiseCount": 9876,
-    "rodentCount": 3210,
-    "totalComplaints": 13086
+    "incident_zip": "11216",
+    "borough": "BROOKLYN",
+    "noise_total": 31,
+    "rodent_total": 5
   },
   {
-    "zipCode": "11211",
-    "borough": "Brooklyn",
-    "noiseCount": 6543,
-    "rodentCount": 4567,
-    "totalComplaints": 11110
+    "incident_zip": "11205",
+    "borough": "BROOKLYN",
+    "noise_total": 31,
+    "rodent_total": 5
   },
   {
-    "zipCode": "11101",
-    "borough": "Queens",
-    "noiseCount": 5678,
-    "rodentCount": 3456,
-    "totalComplaints": 9134
+    "incident_zip": "11217",
+    "borough": "BROOKLYN",
+    "noise_total": 30,
+    "rodent_total": 6
+  },
+  {
+    "incident_zip": "11206",
+    "borough": "BROOKLYN",
+    "noise_total": 30,
+    "rodent_total": 6
   }
 ]

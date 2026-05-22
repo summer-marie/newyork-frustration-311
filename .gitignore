@@ -48,6 +48,10 @@ jspm_packages/
 web_modules/
 
 # TypeScript cache
+
+# Project specific
+nyc_311_2023.db
+export-data.cjs
 *.tsbuildinfo
 
 # Optional npm cache directory

@@ -1,22 +1,22 @@
 [
   {
-    "borough": "Brooklyn",
-    "count": 45678
+    "borough": "BROOKLYN",
+    "rodent_count": 125
   },
   {
-    "borough": "Manhattan",
-    "count": 43210
+    "borough": "QUEENS",
+    "rodent_count": 95
   },
   {
-    "borough": "Bronx",
-    "count": 34567
+    "borough": "MANHATTAN",
+    "rodent_count": 79
   },
   {
-    "borough": "Queens",
-    "count": 28901
+    "borough": "BRONX",
+    "rodent_count": 62
   },
   {
-    "borough": "Staten Island",
-    "count": 12345
+    "borough": "STATEN ISLAND",
+    "rodent_count": 26
   }
 ]

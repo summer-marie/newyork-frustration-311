@@ -1,26 +1,98 @@
 [
-  { "hour": 0, "count": 5234 },
-  { "hour": 1, "count": 3456 },
-  { "hour": 2, "count": 2345 },
-  { "hour": 3, "count": 1234 },
-  { "hour": 4, "count": 1123 },
-  { "hour": 5, "count": 2234 },
-  { "hour": 6, "count": 4567 },
-  { "hour": 7, "count": 7890 },
-  { "hour": 8, "count": 12345 },
-  { "hour": 9, "count": 15678 },
-  { "hour": 10, "count": 18901 },
-  { "hour": 11, "count": 20123 },
-  { "hour": 12, "count": 21234 },
-  { "hour": 13, "count": 19876 },
-  { "hour": 14, "count": 18765 },
-  { "hour": 15, "count": 17654 },
-  { "hour": 16, "count": 19876 },
-  { "hour": 17, "count": 22345 },
-  { "hour": 18, "count": 25678 },
-  { "hour": 19, "count": 27890 },
-  { "hour": 20, "count": 28901 },
-  { "hour": 21, "count": 26789 },
-  { "hour": 22, "count": 19876 },
-  { "hour": 23, "count": 12345 }
+  {
+    "created_hour": 0,
+    "total": 310
+  },
+  {
+    "created_hour": 1,
+    "total": 301
+  },
+  {
+    "created_hour": 2,
+    "total": 315
+  },
+  {
+    "created_hour": 3,
+    "total": 58
+  },
+  {
+    "created_hour": 4,
+    "total": 60
+  },
+  {
+    "created_hour": 5,
+    "total": 48
+  },
+  {
+    "created_hour": 6,
+    "total": 54
+  },
+  {
+    "created_hour": 7,
+    "total": 50
+  },
+  {
+    "created_hour": 8,
+    "total": 87
+  },
+  {
+    "created_hour": 9,
+    "total": 87
+  },
+  {
+    "created_hour": 10,
+    "total": 90
+  },
+  {
+    "created_hour": 11,
+    "total": 76
+  },
+  {
+    "created_hour": 12,
+    "total": 84
+  },
+  {
+    "created_hour": 13,
+    "total": 90
+  },
+  {
+    "created_hour": 14,
+    "total": 87
+  },
+  {
+    "created_hour": 15,
+    "total": 89
+  },
+  {
+    "created_hour": 16,
+    "total": 95
+  },
+  {
+    "created_hour": 17,
+    "total": 74
+  },
+  {
+    "created_hour": 18,
+    "total": 212
+  },
+  {
+    "created_hour": 19,
+    "total": 216
+  },
+  {
+    "created_hour": 20,
+    "total": 196
+  },
+  {
+    "created_hour": 21,
+    "total": 194
+  },
+  {
+    "created_hour": 22,
+    "total": 287
+  },
+  {
+    "created_hour": 23,
+    "total": 321
+  }
 ]

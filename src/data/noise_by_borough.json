@@ -1,22 +1,22 @@
 [
   {
-    "borough": "Manhattan",
-    "count": 125430
+    "borough": "BROOKLYN",
+    "noise_count": 1047
   },
   {
-    "borough": "Brooklyn",
-    "count": 98765
+    "borough": "MANHATTAN",
+    "noise_count": 898
   },
   {
-    "borough": "Queens",
-    "count": 87654
+    "borough": "QUEENS",
+    "noise_count": 687
   },
   {
-    "borough": "Bronx",
-    "count": 54321
+    "borough": "BRONX",
+    "noise_count": 629
   },
   {
-    "borough": "Staten Island",
-    "count": 23456
+    "borough": "STATEN ISLAND",
+    "noise_count": 220
   }
 ]
